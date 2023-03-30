@@ -363,6 +363,8 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
                             SizedBox(height: 20,),
                             PhotoExpanstionTile(title: "Selfie", imageUrl: singleProfileProvider.clientData['Selfie Link']),
                             SizedBox(height: 20,),
+                            PhotoExpanstionTile(title: "Selfie", imageUrl: singleProfileProvider.clientData['Selfie Link']),
+                            SizedBox(height: 20,),
                           ],
                         ),
                       ),

@@ -9,7 +9,7 @@ import '../data/encryption.dart';
 class ApiProvider extends ChangeNotifier {
 
   // This is the base url for all the APIs
-  String _baseUrl = "https://superappapi_uat.jmfonline.in/";
+  String _baseUrl = "http://edgewealth.jmfonline.in/";
 
   // The auth token (jwt) will be set in this variable
   String _authToken = "";
@@ -24,7 +24,7 @@ class ApiProvider extends ChangeNotifier {
     notifyListeners();
 
     Response response = await post(
-      Uri.parse("https://superappapi_uat.jmfonline.in/api/Login/Authenticate"),
+      Uri.parse("http://edgewealth.jmfonline.in/api/Login/Authenticate"),
       body: jsonEncode({
         "username": encryptString("JMEWG"),
         "password": encryptString("Jmfs@1234")

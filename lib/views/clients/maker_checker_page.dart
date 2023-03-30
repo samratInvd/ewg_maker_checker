@@ -1,8 +1,10 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:ewg_maker_checker/providers/single_profile_provider.dart';
+import 'package:ewg_maker_checker/views/clients/widgets/pdf_expansion_tile.dart';
 import 'package:ewg_maker_checker/views/clients/widgets/photo_expansion_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class MakerCheckerPage extends StatefulWidget {
   const MakerCheckerPage({super.key});
@@ -363,7 +365,7 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
                             SizedBox(height: 20,),
                             PhotoExpanstionTile(title: "Selfie", imageUrl: singleProfileProvider.clientData['Selfie Link']),
                             SizedBox(height: 20,),
-                            PhotoExpanstionTile(title: "Selfie", imageUrl: singleProfileProvider.clientData['Selfie Link']),
+                            PdfExpansionTile(title: "Esign PDF", pdfUrl: singleProfileProvider.clientData['Esign PDF']),
                             SizedBox(height: 20,),
                           ],
                         ),

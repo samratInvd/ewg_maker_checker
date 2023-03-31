@@ -93,6 +93,40 @@ class SingleProfileProvider extends ChangeNotifier {
   }
 
 
+  //------- APPROVAL DATA MEMBERS -------//
+  // PHOTO LIVE STATUS
+  bool _photoLiveStatus = false;
+  bool get photoLiveStatus => _photoLiveStatus;
+  setPhotoLiveStatus(bool val) {
+    _photoLiveStatus = val;
+    notifyListeners();
+  }
+
+  // CHEQUE STATUS
+  bool _chequeStatus = false;
+  bool get chequeStatus => _chequeStatus;
+  setChequeStatus(bool val) {
+    _chequeStatus = val;
+    notifyListeners();
+  }
+
+  // SIGN STATUS
+  bool _signStatus = false;
+  bool get signStatus => _signStatus;
+  setSignStatus(bool val) {
+    _signStatus = val;
+    notifyListeners();
+  }
+
+  // FINAL STATUS
+  int _finalStatus = 0;
+  int get finalStatus => _finalStatus;
+  setFinalStatus(int val) {
+    _finalStatus = val;
+    notifyListeners();
+  }
+
+
 
   //------- CALL BSE APIS TO REGISTER THE CLIENT TO BSE FOR TRANSACTIONS -------//
   String _ucc = "";

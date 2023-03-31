@@ -1,4 +1,9 @@
+import 'dart:developer';
+
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:ewg_maker_checker/data/encryption.dart';
+import 'package:ewg_maker_checker/models/response_model.dart';
+import 'package:ewg_maker_checker/providers/api_provider.dart';
 import 'package:ewg_maker_checker/providers/single_profile_provider.dart';
 import 'package:ewg_maker_checker/views/clients/widgets/pdf_expansion_tile.dart';
 import 'package:ewg_maker_checker/views/clients/widgets/photo_expansion_tile.dart';
@@ -18,12 +23,19 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
   int tabIndex = 0;
   List<Map<String, dynamic>> clientDetails = [];
 
-  String _image = "Signature";  
+  @override
+  void initState() {
+    Provider.of<SingleProfileProvider>(context, listen: false).setPhotoLiveStatus(Provider.of<SingleProfileProvider>(context, listen: false).clientData['PhotoLive_Status']);
+    Provider.of<SingleProfileProvider>(context, listen: false).setChequeStatus(Provider.of<SingleProfileProvider>(context, listen: false).clientData['Cheque_Status']);
+    Provider.of<SingleProfileProvider>(context, listen: false).setSignStatus(Provider.of<SingleProfileProvider>(context, listen: false).clientData['Sign_Status']);
+    Provider.of<SingleProfileProvider>(context, listen: false).setFinalStatus(Provider.of<SingleProfileProvider>(context, listen: false).clientData['Final_Status']);
+    super.initState();
+  } 
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<SingleProfileProvider>(
-      builder: (context, SingleProfileProvider singleProfileProvider, _) {
+    return Consumer2<SingleProfileProvider, ApiProvider>(
+      builder: (context, SingleProfileProvider singleProfileProvider, ApiProvider apiProvider, _) {
         return Container(
           width: MediaQuery.of(context).size.width,
           child: Column(
@@ -39,11 +51,53 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
                       width: 300,
                       child: TextField(
                         controller: _searchController,
+                        onSubmitted: (value) {
+                          Provider.of<ApiProvider>(context, listen: false).postRequestAuth()
+                          .then((_) async {
+
+                            ResponseModel responseModel = await Provider.of<ApiProvider>(context, listen: false).postRequest(
+                              endpoint: 'api/RM/Get_ClientDetailsForChecker',
+                              body: {
+                                "FormNo": encryptString(_searchController.text)
+                              }
+                            ).then((response) {   
+                              log(response.toJson().toString());   
+                              print(response.data!['clientDetailsForCheckerMaker'][0]);    
+                              Provider.of<SingleProfileProvider>(context, listen: false).setClientData(response.data!['clientDetailsForCheckerMaker'][0]);
+                              Provider.of<SingleProfileProvider>(context, listen: false).separateDetailsInClientData(response.data!['clientDetailsForCheckerMaker'][0]);
+                              setState(() {});
+                              return response;
+                            });      
+
+                          });
+                        },
                         decoration: InputDecoration(
                           isDense: true,
                           hintText: "Search Clients",
                           hintStyle: TextStyle(color: Colors.grey[300]),
-                          suffixIcon: Icon(Icons.search_rounded, color: Color(0xff461257),),
+                          suffixIcon: GestureDetector(
+                            onTap: () {
+                              Provider.of<ApiProvider>(context, listen: false).postRequestAuth()
+                                .then((_) async {
+
+                                  ResponseModel responseModel = await Provider.of<ApiProvider>(context, listen: false).postRequest(
+                                    endpoint: 'api/RM/Get_ClientDetailsForChecker',
+                                    body: {
+                                      "FormNo": encryptString(_searchController.text)
+                                    }
+                                  ).then((response) {   
+                                    log(response.toJson().toString());   
+                                    print(response.data!['clientDetailsForCheckerMaker'][0]);    
+                                    Provider.of<SingleProfileProvider>(context, listen: false).setClientData(response.data!['clientDetailsForCheckerMaker'][0]);
+                                    Provider.of<SingleProfileProvider>(context, listen: false).separateDetailsInClientData(response.data!['clientDetailsForCheckerMaker'][0]);
+                                    setState(() {});
+                                    return response;
+                                  });      
+
+                                });
+                            },
+                            child: Icon(Icons.search_rounded, color: Color(0xff461257),)
+                          ),
                           border: OutlineInputBorder(
                             borderSide: BorderSide(color: Color(0xff461257), width: 1.5), 
                             borderRadius: BorderRadius.circular(7)
@@ -77,7 +131,9 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
                     bottomRight: Radius.circular(20)
                   )
                 ),
-                child: Row(
+                child: apiProvider.isLoading 
+                  ? Container(height: 600, width: MediaQuery.of(context).size.width, child: Center(child: CircularProgressIndicator(color: Color(0xff461257),),),) 
+                  : Row(
                   children: [
                     Container(
                       child: Column(
@@ -367,6 +423,36 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
                             SizedBox(height: 20,),
                             PdfExpansionTile(title: "Esign PDF", pdfUrl: singleProfileProvider.clientData['Esign PDF']),
                             SizedBox(height: 20,),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SizedBox(
+                                  height: 40,
+                                  width: MediaQuery.of(context).size.width * 0.1,
+                                  child: MaterialButton(
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                                    color: Color(0xff461257),
+                                    onPressed: () {
+                                      singleProfileProvider.setFinalStatus(0);
+                                    },
+                                    child: Center(child: Text("Resend", style: TextStyle(color: Colors.white, fontFamily: 'SemiBold'),)),
+                                  ),
+                                ),
+                                SizedBox(width: 10,),
+                                SizedBox(
+                                  height: 40,
+                                  width: MediaQuery.of(context).size.width * 0.1,
+                                  child: MaterialButton(
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                                    color: Color(0xff461257),
+                                    onPressed: () {
+                                      singleProfileProvider.setFinalStatus(1);
+                                    },
+                                    child: Center(child: Text("Approve", style: TextStyle(color: Colors.white, fontFamily: 'SemiBold'),)),
+                                  ),
+                                ),
+                              ],
+                            )
                           ],
                         ),
                       ),

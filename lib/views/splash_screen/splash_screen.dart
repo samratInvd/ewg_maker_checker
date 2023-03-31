@@ -25,7 +25,7 @@ class _SplashScreenState extends State<SplashScreen> {
         ResponseModel responseModel = await Provider.of<ApiProvider>(context, listen: false).postRequest(
           endpoint: 'api/RM/Get_ClientDetailsForChecker',
           body: {
-            "FormNo": encryptString("1222")
+            "FormNo": encryptString("1219")
           }
         ).then((response) {   
           log(response.toJson().toString());   

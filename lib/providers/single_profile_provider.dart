@@ -11,6 +11,10 @@ class SingleProfileProvider extends ChangeNotifier {
   Map<String, dynamic> _clientData = {};
   Map<String, dynamic> get clientData => _clientData;
   setClientData(Map<String, dynamic> data) {
+    // Clearing the old data first
+    _clientData.clear();
+    notifyListeners();
+
     _clientData = data;
     notifyListeners();
   }
@@ -18,6 +22,11 @@ class SingleProfileProvider extends ChangeNotifier {
   List<Map<String, dynamic>> _clientDataSeparated = [];
   List<Map<String, dynamic>> get clientDataSeparated => _clientDataSeparated;
   separateDetailsInClientData(Map<String, dynamic> data) {
+
+    // Clearing the old data first
+    _clientDataSeparated.clear();
+    notifyListeners();
+
     Map<String, dynamic> basicInfo = {
       "Mobile No": data['MobileNo'] ?? "N/A",
       "Email Id": data['EmailId'] ?? "N/A",

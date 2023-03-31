@@ -61,10 +61,12 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
                                 "FormNo": encryptString(_searchController.text)
                               }
                             ).then((response) {   
-                              log(response.toJson().toString());   
-                              print(response.data!['clientDetailsForCheckerMaker'][0]);    
-                              Provider.of<SingleProfileProvider>(context, listen: false).setClientData(response.data!['clientDetailsForCheckerMaker'][0]);
-                              Provider.of<SingleProfileProvider>(context, listen: false).separateDetailsInClientData(response.data!['clientDetailsForCheckerMaker'][0]);
+                              log(response.toJson().toString());                                 
+
+                              // Populating the new data
+                              singleProfileProvider.setClientData(response.data!['clientDetailsForCheckerMaker'][0]);
+                              singleProfileProvider.separateDetailsInClientData(response.data!['clientDetailsForCheckerMaker'][0]);
+                              print("CLIENT DATA SEPARATED: " + singleProfileProvider.clientDataSeparated.toString());
                               setState(() {});
                               return response;
                             });      
@@ -77,6 +79,7 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
                           hintStyle: TextStyle(color: Colors.grey[300]),
                           suffixIcon: GestureDetector(
                             onTap: () {
+                              print("SEARCH");
                               Provider.of<ApiProvider>(context, listen: false).postRequestAuth()
                                 .then((_) async {
 
@@ -86,10 +89,12 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
                                       "FormNo": encryptString(_searchController.text)
                                     }
                                   ).then((response) {   
-                                    log(response.toJson().toString());   
-                                    print(response.data!['clientDetailsForCheckerMaker'][0]);    
-                                    Provider.of<SingleProfileProvider>(context, listen: false).setClientData(response.data!['clientDetailsForCheckerMaker'][0]);
-                                    Provider.of<SingleProfileProvider>(context, listen: false).separateDetailsInClientData(response.data!['clientDetailsForCheckerMaker'][0]);
+                                    log(response.toJson().toString());                                       
+
+                                    // Populating the new data  
+                                    singleProfileProvider.setClientData(response.data!['clientDetailsForCheckerMaker'][0]);
+                                    singleProfileProvider.separateDetailsInClientData(response.data!['clientDetailsForCheckerMaker'][0]);
+                                    print("CLIENT DATA SEPARATED: " + singleProfileProvider.clientDataSeparated.toString());
                                     setState(() {});
                                     return response;
                                   });      

@@ -67,6 +67,7 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
                               singleProfileProvider.setClientData(response.data!['clientDetailsForCheckerMaker'][0]);
                               singleProfileProvider.separateDetailsInClientData(response.data!['clientDetailsForCheckerMaker'][0]);
                               print("CLIENT DATA SEPARATED: " + singleProfileProvider.clientDataSeparated.toString());
+                              print(singleProfileProvider.clientData);
                               setState(() {});
                               return response;
                             });      
@@ -383,7 +384,7 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,                                  
                                     children: [
-                                      Text(
+                                      SelectableText(
                                         singleProfileProvider.clientDataSeparated[tabIndex][singleProfileProvider.clientDataSeparated[tabIndex].keys.toList()[index]].toString(),
                                         textAlign: TextAlign.left,
                                         style: TextStyle(color: Colors.black, fontFamily: 'SemiBold'),
@@ -450,8 +451,14 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
                                   child: MaterialButton(
                                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                                     color: Color(0xff461257),
-                                    onPressed: () {
+                                    onPressed: () async {
                                       singleProfileProvider.setFinalStatus(1);
+
+                                      // TODO: Clarify about the endpoint of saving details
+                                      // Saving all the approved Details
+                                      // ResponseModel responseModel = await apiProvider.postRequest(
+                                      //   endpoint: ""
+                                      // );
                                     },
                                     child: Center(child: Text("Approve", style: TextStyle(color: Colors.white, fontFamily: 'SemiBold'),)),
                                   ),

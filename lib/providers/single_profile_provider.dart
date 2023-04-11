@@ -38,7 +38,7 @@ class SingleProfileProvider extends ChangeNotifier {
       "PAN": data['PAN'] ?? "N/A",
       "Gender": data['Gender'] ?? "N/A",
       "Date of Birth": data['DOB'] ?? "N/A",
-      "Father's Name": data['Father Name'] ?? "N/A",
+      "Father's/Spouse Name": data['Father Name'] ?? "N/A",
       "Mother's Name": data['Mother Name'] ?? "N/A",
       "isMinor": data['isMinor'] ?? "N/A",
       "Gurdian": data['Gurdian'] ?? "N/A" ?? "N/A",

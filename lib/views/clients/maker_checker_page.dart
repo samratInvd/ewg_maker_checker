@@ -4,6 +4,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:ewg_maker_checker/data/encryption.dart';
 import 'package:ewg_maker_checker/models/response_model.dart';
 import 'package:ewg_maker_checker/providers/api_provider.dart';
+import 'package:ewg_maker_checker/providers/bse_api_provider.dart';
 import 'package:ewg_maker_checker/providers/single_profile_provider.dart';
 import 'package:ewg_maker_checker/views/clients/widgets/pdf_expansion_tile.dart';
 import 'package:ewg_maker_checker/views/clients/widgets/photo_expansion_tile.dart';
@@ -34,8 +35,8 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<SingleProfileProvider, ApiProvider>(
-      builder: (context, SingleProfileProvider singleProfileProvider, ApiProvider apiProvider, _) {
+    return Consumer3<SingleProfileProvider, ApiProvider, BseApiProvider>(
+      builder: (context, SingleProfileProvider singleProfileProvider, ApiProvider apiProvider, BseApiProvider bseApiProvider, _) {
         return Container(
           width: MediaQuery.of(context).size.width,
           child: Column(
@@ -459,6 +460,9 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
                                       // ResponseModel responseModel = await apiProvider.postRequest(
                                       //   endpoint: ""
                                       // );
+
+                                      bseApiProvider.onboarding(singleProfileProvider.clientData);
+
                                     },
                                     child: Center(child: Text("Approve", style: TextStyle(color: Colors.white, fontFamily: 'SemiBold'),)),
                                   ),

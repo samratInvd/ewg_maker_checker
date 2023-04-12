@@ -1,6 +1,9 @@
+import 'dart:convert';
 import 'dart:developer';
 
+import 'package:dart_ipify/dart_ipify.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:ewg_maker_checker/data/encrption_bse.dart';
 import 'package:ewg_maker_checker/data/encryption.dart';
 import 'package:ewg_maker_checker/models/response_model.dart';
 import 'package:ewg_maker_checker/providers/api_provider.dart';
@@ -9,6 +12,7 @@ import 'package:ewg_maker_checker/providers/single_profile_provider.dart';
 import 'package:ewg_maker_checker/views/clients/widgets/pdf_expansion_tile.dart';
 import 'package:ewg_maker_checker/views/clients/widgets/photo_expansion_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
@@ -23,9 +27,52 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
   TextEditingController _searchController = TextEditingController();
   int tabIndex = 0;
   List<Map<String, dynamic>> clientDetails = [];
+  String _ucc = "";
+  String _sessionId = "";
+
+  callBseApis(Map<String, dynamic> clientData) async {
+    String ipV4 = await Ipify.ipv4();
+
+    // UCC
+    // Response signUpForUccResponse = await post(
+    //   Uri.parse("http://jmbseapi.invd.in/api/ClientSignUp/SignUp"),
+    //   body: {
+    //     "ParamValue": encryptStringBSE("${clientData['First Name']} ${clientData['Middle Name'] == "null" || clientData['Middle Name'] == null ? "" : clientData['Middle Name']} ${clientData['Last Name']}|${clientData['EmailId']}|${clientData['MobileNo']}|${ipV4}|OWNCL00001")
+    //   }    
+    // );
+    // var data1 = jsonDecode(signUpForUccResponse.body);
+    // print("UCC: " + data1);
+    // setState(() {
+    //   _ucc = data1['UCC'];
+    // });
+
+    // SESSIONID
+    Response sessionIdResponse = await post(
+      Uri.parse("http://jmbseapi.invd.in/api/Common/GenerateClientSession"),
+      body: {
+        "ParamValue": encryptStringBSE("1002")
+      }      
+    );    
+    var data2 = jsonDecode(sessionIdResponse.body);
+    print("SESSION: " + data2);    
+
+
+
+    // Response getSessionIdResponse = await post(
+    //   Uri.parse("http://jmbseapi.invd.in/api/Common/GenerateClientSession"),
+    //   body: {
+    //     "ParamValue": encryptStringBSE("1002")
+    //   }
+    // );          
+    // var data1 = jsonDecode(getSessionIdResponse.body);
+    // print("Session ID: " + jsonDecode(getSessionIdResponse.body).toString());
+    // Provider.of<UserDataProvider>(context, listen: false).setSessionId(data1['SessionId']);  
+
+  }
 
   @override
-  void initState() {
+  void initState() { 
+    callBseApis(Provider.of<SingleProfileProvider>(context, listen: false).clientData);
     Provider.of<SingleProfileProvider>(context, listen: false).setPhotoLiveStatus(Provider.of<SingleProfileProvider>(context, listen: false).clientData['PhotoLive_Status']);
     Provider.of<SingleProfileProvider>(context, listen: false).setChequeStatus(Provider.of<SingleProfileProvider>(context, listen: false).clientData['Cheque_Status']);
     Provider.of<SingleProfileProvider>(context, listen: false).setSignStatus(Provider.of<SingleProfileProvider>(context, listen: false).clientData['Sign_Status']);
@@ -442,7 +489,18 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
                                     color: Color(0xff461257),
                                     onPressed: () {
                                       // singleProfileProvider.setFinalStatus(0);
-                                      bseApiProvider.onboarding(context, _searchController.text, singleProfileProvider.clientData);
+                                      // bseApiProvider.onboarding(context, _searchController.text, singleProfileProvider.clientData);
+                                      bseApiProvider.uccGeneration(singleProfileProvider.clientData);
+                                      bseApiProvider.sessionIdGeneration();
+                                      bseApiProvider.updatePrimaryInfo(singleProfileProvider.clientData);
+                                      bseApiProvider.updateClientType(singleProfileProvider.clientData);
+                                      bseApiProvider.updateBankDetails(singleProfileProvider.clientData);
+                                      bseApiProvider.updateFatcaDetails(singleProfileProvider.clientData);
+                                      bseApiProvider.checkCvlInfo(singleProfileProvider.clientData);
+                                      bseApiProvider.updateNomineeInfo(singleProfileProvider.clientData);
+                                      bseApiProvider.updatePersonalAddress(singleProfileProvider.clientData);
+                                      bseApiProvider.clientDocChequeDetails(singleProfileProvider.clientData);
+                                      bseApiProvider.clientDocSignDetails(singleProfileProvider.clientData);
 
                                     },
                                     child: Center(child: Text("Resend", style: TextStyle(color: Colors.white, fontFamily: 'SemiBold'),)),
@@ -500,7 +558,7 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
                                       //   endpoint: ""
                                       // );                                      
 
-                                      bseApiProvider.onboarding(context, _searchController.text, singleProfileProvider.clientData);
+                                      // bseApiProvider.onboarding(singleProfileProvider.clientData);
 
                                     },
                                     child: Center(child: Text("Approve", style: TextStyle(color: Colors.white, fontFamily: 'SemiBold'),)),

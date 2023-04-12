@@ -8,6 +8,14 @@ import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 
 class SingleProfileProvider extends ChangeNotifier {
+
+  String _formNo = "";
+  String get formNo => _formNo;
+  void setFormNo(String no) {
+    _formNo = no;
+    notifyListeners();
+  }
+
   Map<String, dynamic> _clientData = {};
   Map<String, dynamic> get clientData => _clientData;
   setClientData(Map<String, dynamic> data) {

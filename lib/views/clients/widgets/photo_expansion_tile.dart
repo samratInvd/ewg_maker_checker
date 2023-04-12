@@ -116,10 +116,13 @@ class _PhotoExpanstionTileState extends State<PhotoExpanstionTile> {
                               onPressed: () {
                                 if(widget.title == "Signature") {
                                   singleProfileProvider.setSignStatus(true);
+                                  print(singleProfileProvider.signStatus);
                                 } else if(widget.title == "Cheque") {
                                   singleProfileProvider.setChequeStatus(true);
+                                  print(singleProfileProvider.chequeStatus);
                                 } else if(widget.title == "Selfie") {
                                   singleProfileProvider.setPhotoLiveStatus(true);
+                                  print(singleProfileProvider.photoLiveStatus);
                                 }
                               },
                               child: Center(child: Text("Approve", style: TextStyle(color: Colors.white, fontFamily: 'SemiBold'),)),

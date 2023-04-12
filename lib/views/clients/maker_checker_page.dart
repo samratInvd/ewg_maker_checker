@@ -69,6 +69,7 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
                               singleProfileProvider.separateDetailsInClientData(response.data!['clientDetailsForCheckerMaker'][0]);
                               print("CLIENT DATA SEPARATED: " + singleProfileProvider.clientDataSeparated.toString());
                               print(singleProfileProvider.clientData);
+                              singleProfileProvider.setFormNo(value);
                               setState(() {});
                               return response;
                             });      
@@ -440,7 +441,9 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
                                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                                     color: Color(0xff461257),
                                     onPressed: () {
-                                      singleProfileProvider.setFinalStatus(0);
+                                      // singleProfileProvider.setFinalStatus(0);
+                                      bseApiProvider.onboarding(context, _searchController.text, singleProfileProvider.clientData);
+
                                     },
                                     child: Center(child: Text("Resend", style: TextStyle(color: Colors.white, fontFamily: 'SemiBold'),)),
                                   ),
@@ -455,13 +458,49 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
                                     onPressed: () async {
                                       singleProfileProvider.setFinalStatus(1);
 
+                                      print(singleProfileProvider.formNo.runtimeType);
+                                      print(singleProfileProvider.clientData['PAN'].toString().runtimeType);
+                                      print(singleProfileProvider.chequeStatus.toString().runtimeType);
+                                      print(singleProfileProvider.signStatus.toString().runtimeType);
+                                      print(singleProfileProvider.photoLiveStatus.toString().runtimeType);
+                                      print(singleProfileProvider.finalStatus.toString().runtimeType);
+
+                                      ResponseModel setFinalStatusResponseModel = await apiProvider.postRequest(
+                                        endpoint: "api/RM/CheckerApproved",
+                                        body: {
+                                            "formNo": encryptString(singleProfileProvider.formNo),
+                                            "panNo": encryptString(singleProfileProvider.clientData['PAN'].toString()),
+                                            "chequeStatus": encryptString(singleProfileProvider.chequeStatus ? "1" : "0"),
+                                            "signStatus": encryptString(singleProfileProvider.signStatus  ? "1" : "0"),
+                                            "photo_VideoStatus": encryptString(singleProfileProvider.photoLiveStatus  ? "1" : "0"),
+                                            "finalStatus": encryptString(singleProfileProvider.finalStatus.toString())
+                                        }
+                                      ).then((value) async {
+
+                                        ResponseModel mapUccResponse = await apiProvider.postRequest(
+                                          endpoint: 'api/BSEAPI/UpdateUCC',
+                                          body: {
+                                            "formNo": encryptString(_searchController.text),
+                                            "mf_UCC": encryptString(singleProfileProvider.ucc),
+                                            "ucc": encryptString(singleProfileProvider.clientData['JMUCC'])
+                                          }
+                                          
+                                        );
+
+                                        print("UCC SAVE RESPONSE: " + mapUccResponse.toJson().toString());
+
+                                        return value;
+                                      });
+
+                                      print(setFinalStatusResponseModel.toJson());
+
                                       // TODO: Clarify about the endpoint of saving details
                                       // Saving all the approved Details
                                       // ResponseModel responseModel = await apiProvider.postRequest(
                                       //   endpoint: ""
-                                      // );
+                                      // );                                      
 
-                                      bseApiProvider.onboarding(singleProfileProvider.clientData);
+                                      bseApiProvider.onboarding(context, _searchController.text, singleProfileProvider.clientData);
 
                                     },
                                     child: Center(child: Text("Approve", style: TextStyle(color: Colors.white, fontFamily: 'SemiBold'),)),

@@ -30,49 +30,175 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
   String _ucc = "";
   String _sessionId = "";
 
-  callBseApis(Map<String, dynamic> clientData) async {
+  Future<void> callBseApis(Map<String, dynamic> clientData) async {
     String ipV4 = await Ipify.ipv4();
 
     // UCC
-    // Response signUpForUccResponse = await post(
-    //   Uri.parse("http://jmbseapi.invd.in/api/ClientSignUp/SignUp"),
-    //   body: {
-    //     "ParamValue": encryptStringBSE("${clientData['First Name']} ${clientData['Middle Name'] == "null" || clientData['Middle Name'] == null ? "" : clientData['Middle Name']} ${clientData['Last Name']}|${clientData['EmailId']}|${clientData['MobileNo']}|${ipV4}|OWNCL00001")
-    //   }    
-    // );
-    // var data1 = jsonDecode(signUpForUccResponse.body);
-    // print("UCC: " + data1);
-    // setState(() {
-    //   _ucc = data1['UCC'];
-    // });
+    Response getUCC = await post(
+      Uri.parse("http://jmbseapi.invd.in/api/ClientSignUp/SignUp"),
+      body: {
+        "ParamValue": encryptStringBSE("${clientData['First Name']} ${clientData['Middle Name'] == "null" || clientData['Middle Name'] == null ? "" : clientData['Middle Name']} ${clientData['Last Name']}|${clientData['EmailId']}|${clientData['MobileNo']}|${ipV4}|OWNCL00001")
+      }    
+    );
+    var data1 = jsonDecode(getUCC.body);
+    print("UCC: " + jsonDecode(getUCC.body).toString());
+    setState(() {
+      _ucc = data1['UCC'];
+    });
 
     // SESSIONID
-    Response sessionIdResponse = await post(
+    Response getSessionIdResponse = await post(
       Uri.parse("http://jmbseapi.invd.in/api/Common/GenerateClientSession"),
       body: {
         "ParamValue": encryptStringBSE("1002")
       }      
     );    
-    var data2 = jsonDecode(sessionIdResponse.body);
-    print("SESSION: " + data2);    
+    var data2 = jsonDecode(getSessionIdResponse.body);
+    setState(() {
+      _sessionId = data2['SessionId'];
+    });
+    print("SESSION: " + jsonDecode(getSessionIdResponse.body).toString());    
 
 
+    // PRIMARYINFO
+    Response getPrimaryInfo = await post(
+      Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdatePersonalInfoPrimary"),
+      body:
+        {
+          "ParamValue": encryptStringBSE(
+            "$_ucc|$_sessionId|${clientData['Gender']}|02|$clientData['Father Name']|${clientData['First Name']} ${clientData['Middle Name']} ${clientData['Last Name']}|91-${clientData['MobileNo']}|${clientData['EmailId']}|||"
+          )
+        }      
+    );
+    var data3 = jsonDecode(getPrimaryInfo.body);
+    print("Primary Info: " + data3);
 
-    // Response getSessionIdResponse = await post(
-    //   Uri.parse("http://jmbseapi.invd.in/api/Common/GenerateClientSession"),
-    //   body: {
-    //     "ParamValue": encryptStringBSE("1002")
-    //   }
-    // );          
-    // var data1 = jsonDecode(getSessionIdResponse.body);
-    // print("Session ID: " + jsonDecode(getSessionIdResponse.body).toString());
-    // Provider.of<UserDataProvider>(context, listen: false).setSessionId(data1['SessionId']);  
+
+    //CLIENT TYPE
+    Response getClientType = await post(
+      Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdateClientType"),
+      body:
+        {
+          "ParamValue": encryptStringBSE(
+            "$_ucc|$_sessionId|single|01"
+          )
+        }      
+    );
+    var data4 = jsonDecode(getClientType.body);
+    print("Client Type: " + data4);
+
+    // CVL
+    String dob = clientData['DOB'];
+    String year = dob.substring(6);
+    String month = dob.substring(3, 5);
+    String day = dob.substring(0, 2);
+    dob = "$year-$month-$day";
+
+    Response getCvl = await post(
+      Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/CheckCVLPrimary"),
+      body:
+        {
+          "ParamValue": encryptStringBSE(
+            "$_ucc|$_sessionId|$clientData['PAN']|$dob"
+          )
+        }      
+    );
+    var data5 = jsonDecode(getCvl.body);
+    print("Cvl Data: " + data5);
+
+
+    // NOMINEE INFO
+    Response getNomineeInfo = await post(
+      Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdateNomineeInfo"),
+      body:
+        {
+          "ParamValue": encryptStringBSE(
+            "$_ucc|$_sessionId|${clientData['Nominee Name']}|DC"
+          )
+        }      
+    );
+    var data6 = jsonDecode(getNomineeInfo.body);
+    print("Nominee Info: " + data6); 
+
+
+    // ADDRESS
+    Response getAddress = await post(
+      Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdatePrimaryAddress"),
+      body:
+        {
+          "ParamValue": encryptStringBSE(
+            "$_ucc|$_sessionId|${clientData['Per Address 1']}, ${clientData['Per Address 2']}, ${clientData['Per Address 3']}|||${clientData['Per City']}|${stateCodes.where((element) => element['StateName'] == clientData['Per State'].toString().toUpperCase()).first['StateCode']}|${clientData['PerPincode']}"
+          )
+        }      
+    );
+    var data7 = jsonDecode(getAddress.body);
+    print("Personal Address: " + data7);
+
+
+    // BANK DETAILS
+    Response getBankDetails = await post(
+      Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdateBankDetails"),
+      body:
+        {
+          "ParamValue": encryptStringBSE(
+            "$_ucc|$_sessionId|SB|${clientData['Account No']}|${clientData['IFSC Code']}|Y"
+          )
+        }      
+    );
+    var data8 = jsonDecode(getBankDetails.body);
+    print("Bank Details: " + data8);   
+
+
+    // FATCA
+    Response getFatcaDetails = await post(
+      Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdateFatcaInfo"),
+      body:
+        {
+          "ParamValue": encryptStringBSE(
+            "$_ucc|$_sessionId|01|${clientData['Per City']}|IN|IN|${clientData['PAN']}|C|01|32||N||"
+          )
+        }      
+    );
+    var data9 = jsonDecode(getFatcaDetails.body);
+    print("FATCA Details: " + data9);   
+
+
+    // SIGN
+    Response getClientDoc = await post(
+      Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdateClientDocs"),
+      body:
+        {
+          "ParamValue": encryptStringBSE(
+            "$_ucc|$_sessionId|signature|${clientData['Sign Link']}"
+          )
+        }      
+    );
+    var data10 = jsonDecode(getClientDoc.body);
+    print("Client Doc Sign Details: " + data10);
+
+
+    // CHEQUE
+    Response getClientDoc2 = await post(
+      Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdateClientDocs"),
+      body:
+        {
+          "ParamValue": encryptStringBSE(
+            "$_ucc|$_sessionId|bankproof|${clientData['Cheque Link']}"
+          )
+        }      
+    );
+    var data11 = jsonDecode(getClientDoc2.body);
+    print("Client Doc Cheque Details: " + data11);
 
   }
 
+
+
+
+
   @override
   void initState() { 
-    callBseApis(Provider.of<SingleProfileProvider>(context, listen: false).clientData);
+    // callBseApis(Provider.of<SingleProfileProvider>(context, listen: false).clientData);
     Provider.of<SingleProfileProvider>(context, listen: false).setPhotoLiveStatus(Provider.of<SingleProfileProvider>(context, listen: false).clientData['PhotoLive_Status']);
     Provider.of<SingleProfileProvider>(context, listen: false).setChequeStatus(Provider.of<SingleProfileProvider>(context, listen: false).clientData['Cheque_Status']);
     Provider.of<SingleProfileProvider>(context, listen: false).setSignStatus(Provider.of<SingleProfileProvider>(context, listen: false).clientData['Sign_Status']);
@@ -488,20 +614,8 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
                                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                                     color: Color(0xff461257),
                                     onPressed: () {
-                                      // singleProfileProvider.setFinalStatus(0);
+                                      singleProfileProvider.setFinalStatus(0);
                                       // bseApiProvider.onboarding(context, _searchController.text, singleProfileProvider.clientData);
-                                      bseApiProvider.uccGeneration(singleProfileProvider.clientData);
-                                      bseApiProvider.sessionIdGeneration();
-                                      bseApiProvider.updatePrimaryInfo(singleProfileProvider.clientData);
-                                      bseApiProvider.updateClientType(singleProfileProvider.clientData);
-                                      bseApiProvider.updateBankDetails(singleProfileProvider.clientData);
-                                      bseApiProvider.updateFatcaDetails(singleProfileProvider.clientData);
-                                      bseApiProvider.checkCvlInfo(singleProfileProvider.clientData);
-                                      bseApiProvider.updateNomineeInfo(singleProfileProvider.clientData);
-                                      bseApiProvider.updatePersonalAddress(singleProfileProvider.clientData);
-                                      bseApiProvider.clientDocChequeDetails(singleProfileProvider.clientData);
-                                      bseApiProvider.clientDocSignDetails(singleProfileProvider.clientData);
-
                                     },
                                     child: Center(child: Text("Resend", style: TextStyle(color: Colors.white, fontFamily: 'SemiBold'),)),
                                   ),
@@ -535,17 +649,23 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
                                         }
                                       ).then((value) async {
 
-                                        ResponseModel mapUccResponse = await apiProvider.postRequest(
-                                          endpoint: 'api/BSEAPI/UpdateUCC',
-                                          body: {
-                                            "formNo": encryptString(_searchController.text),
-                                            "mf_UCC": encryptString(singleProfileProvider.ucc),
-                                            "ucc": encryptString(singleProfileProvider.clientData['JMUCC'])
-                                          }
-                                          
-                                        );
 
-                                        print("UCC SAVE RESPONSE: " + mapUccResponse.toJson().toString());
+                                        callBseApis(singleProfileProvider.clientData).then((value) async {
+
+                                          ResponseModel mapUccResponse = await apiProvider.postRequest(
+                                            endpoint: 'api/BSEAPI/UpdateUCC',
+                                            body: {
+                                              "formNo": encryptString(_searchController.text),
+                                              "mf_UCC": encryptString(_ucc),
+                                              "ucc": encryptString(singleProfileProvider.clientData['JMUCC'])
+                                            }
+                                            
+                                          );
+
+                                          print("UCC SAVE RESPONSE: " + mapUccResponse.toJson().toString());
+
+                                          return value;
+                                        });                                        
 
                                         return value;
                                       });
@@ -580,3 +700,170 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
     );
   }
 }
+
+
+
+
+
+List<Map<String, dynamic>> stateCodes = [
+        {
+            "StateCode": "AN",
+            "StateName": "ANDAMAN & NICOBAR"
+        },
+        {
+            "StateCode": "AP",
+            "StateName": "ANDHRA PRADESH"
+        },
+        {
+            "StateCode": "AR",
+            "StateName": "ARUNACHAL PRADESH"
+        },
+        {
+            "StateCode": "AS",
+            "StateName": "ASSAM"
+        },
+        {
+            "StateCode": "BH",
+            "StateName": "BIHAR"
+        },
+        {
+            "StateCode": "CH",
+            "StateName": "CHANDIGARH"
+        },
+        {
+            "StateCode": "CG",
+            "StateName": "CHHATTISGARH"
+        },
+        {
+            "StateCode": "DN",
+            "StateName": "DADRA AND NAGAR HAVELI"
+        },
+        {
+            "StateCode": "DL",
+            "StateName": "DELHI"
+        },
+        {
+            "StateCode": "DD",
+            "StateName": "DIU AND DAMAN"
+        },
+        {
+            "StateCode": "GO",
+            "StateName": "GOA"
+        },
+        {
+            "StateCode": "GU",
+            "StateName": "GUJARAT"
+        },
+        {
+            "StateCode": "HA",
+            "StateName": "HARYANA"
+        },
+        {
+            "StateCode": "HP",
+            "StateName": "HIMACHAL PRADESH"
+        },
+        {
+            "StateCode": "JM",
+            "StateName": "JAMMU AND KASHMIR"
+        },
+        {
+            "StateCode": "JH",
+            "StateName": "JHARKHAND"
+        },
+        {
+            "StateCode": "KA",
+            "StateName": "KARNATAKA"
+        },
+        {
+            "StateCode": "KE",
+            "StateName": "KERALA"
+        },
+        {
+            "StateCode": "LD",
+            "StateName": "LAKSHADWEEP"
+        },
+        {
+            "StateCode": "MP",
+            "StateName": "MADHYA PRADESH"
+        },
+        {
+            "StateCode": "MA",
+            "StateName": "MAHARASHTRA"
+        },
+        {
+            "StateCode": "MN",
+            "StateName": "MANIPUR"
+        },
+        {
+            "StateCode": "ME",
+            "StateName": "MEGHALAYA"
+        },
+        {
+            "StateCode": "MI",
+            "StateName": "MIZORAM"
+        },
+        {
+            "StateCode": "NA",
+            "StateName": "NAGALAND"
+        },
+        {
+            "StateCode": "NG",
+            "StateName": "NAGPUR"
+        },
+        {
+            "StateCode": "ND",
+            "StateName": "NEW DELHI"
+        },
+        {
+            "StateCode": "OR",
+            "StateName": "ORISSA"
+        },
+        {
+            "StateCode": "OH",
+            "StateName": "OTHERS"
+        },
+        {
+            "StateCode": "PO",
+            "StateName": "PONDICHERRY"
+        },
+        {
+            "StateCode": "PU",
+            "StateName": "PUNJAB"
+        },
+        {
+            "StateCode": "RA",
+            "StateName": "RAJASTHAN"
+        },
+        {
+            "StateCode": "SI",
+            "StateName": "SIKKIM"
+        },
+        {
+            "StateCode": "TN",
+            "StateName": "TAMIL NADU"
+        },
+        {
+            "StateCode": "TG",
+            "StateName": "TELANGANA"
+        },
+        {
+            "StateCode": "TR",
+            "StateName": "TRIPURA"
+        },
+        {
+            "StateCode": "UP",
+            "StateName": "UTTAR PRADESH"
+        },
+        {
+            "StateCode": "UL",
+            "StateName": "UTTARAKHAND"
+        },
+        {
+            "StateCode": "UC",
+            "StateName": "UTTARANCHAL"
+        },
+        {
+            "StateCode": "WB",
+            "StateName": "WEST BENGAL"
+        }
+    ];

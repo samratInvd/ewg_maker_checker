@@ -17,17 +17,17 @@ class BseApiProvider extends ChangeNotifier {
   String _sessionId = "";
 
 
-  Future<void> onboarding(context, String formNo, Map<String, dynamic> clientData) async {
-    // uccGeneration(context, formNo, clientData);
+  Future<void> onboarding(Map<String, dynamic> clientData) async {
+    uccGeneration(clientData);
     sessionIdGeneration();
-    // updateClientType(clientData);
-    // updateBankDetails(clientData);
-    // updateFatcaDetails(clientData);
-    // checkCvlInfo(clientData);
-    // updateNomineeInfo(clientData);
-    // updatePersonalAddress(clientData);
-    // clientDocChequeDetails(clientData);
-    // clientDocSignDetails(clientData);
+    updateClientType(clientData);
+    updateBankDetails(clientData);
+    updateFatcaDetails(clientData);
+    checkCvlInfo(clientData);
+    updateNomineeInfo(clientData);
+    updatePersonalAddress(clientData);
+    clientDocChequeDetails(clientData);
+    clientDocSignDetails(clientData);
   }
 
 
@@ -39,13 +39,13 @@ class BseApiProvider extends ChangeNotifier {
     // print(jsonEncode(body).toString());    
 
     try {
-      Response signUpForUccResponse = await post(
+      Response getUcc = await post(
         Uri.parse("http://jmbseapi.invd.in/api/ClientSignUp/SignUp"),
         body: {
           "ParamValue": encryptStringBSE("${clientData['First Name']} ${clientData['Middle Name'] == "null" || clientData['Middle Name'] == null ? "" : clientData['Middle Name']} ${clientData['Last Name']}|${clientData['EmailId']}|${clientData['MobileNo']}|${ipV4}|OWNCL00001")
         },      
       );
-      var data = jsonDecode(signUpForUccResponse.body);
+      var data = jsonDecode(getUcc.body);
       print("UCC: " + data);
       _ucc = data['UCC'];
       notifyListeners();
@@ -69,14 +69,14 @@ class BseApiProvider extends ChangeNotifier {
 
   sessionIdGeneration() async {
     try {
-      Response sessionIdResponse = await post(
+      Response getSessionId = await post(
         Uri.parse("http://jmbseapi.invd.in/api/Common/GenerateClientSession"),
         body: {
           "ParamValue": encryptStringBSE("1002")
         },        
       );
-      print("RESPONSE CODE: " + sessionIdResponse.statusCode.toString());
-      var data = jsonDecode(sessionIdResponse.body);
+      print("RESPONSE CODE: " + getSessionId.statusCode.toString());
+      var data = jsonDecode(getSessionId.body);
       print("SESSION: " + data);
       _sessionId = data['SessionId'];
       notifyListeners();
@@ -87,7 +87,7 @@ class BseApiProvider extends ChangeNotifier {
 
 
   updatePrimaryInfo(Map<String, dynamic> clientData) async {
-    Response primaryInfoResponse = await post(
+    Response getPrimaryInfo = await post(
       Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdatePersonalInfoPrimary"),
       body: jsonEncode(
         {
@@ -97,14 +97,14 @@ class BseApiProvider extends ChangeNotifier {
         }
       )
     );
-    var data = jsonDecode(primaryInfoResponse.body);
+    var data = jsonDecode(getPrimaryInfo.body);
     print("Primary Info: " + data);    
     notifyListeners();
   }
 
 
   updateClientType(Map<String, dynamic> clientData) async {
-    Response clientTypeResponse = await post(
+    Response getClientType = await post(
       Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdateClientType"),
       body: jsonEncode(
         {
@@ -114,7 +114,7 @@ class BseApiProvider extends ChangeNotifier {
         }
       )
     );
-    var data = jsonDecode(clientTypeResponse.body);
+    var data = jsonDecode(getClientType.body);
     print("Client Type: " + data);    
     notifyListeners();
   }
@@ -128,7 +128,7 @@ class BseApiProvider extends ChangeNotifier {
     String day = dob.substring(0, 2);
     dob = "$year-$month-$day";
 
-    Response cvlResponse = await post(
+    Response getCvl = await post(
       Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/CheckCVLPrimary"),
       body: jsonEncode(
         {
@@ -138,7 +138,7 @@ class BseApiProvider extends ChangeNotifier {
         }
       )
     );
-    var data = jsonDecode(cvlResponse.body);
+    var data = jsonDecode(getCvl.body);
     print("Cvl Data: " + data);    
     notifyListeners();
   }
@@ -146,7 +146,7 @@ class BseApiProvider extends ChangeNotifier {
 
 
   updateNomineeInfo(Map<String, dynamic> clientData) async {
-    Response nomineeInfoResponse = await post(
+    Response getNomineeInfo = await post(
       Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdateNomineeInfo"),
       body: jsonEncode(
         {
@@ -156,14 +156,14 @@ class BseApiProvider extends ChangeNotifier {
         }
       )
     );
-    var data = jsonDecode(nomineeInfoResponse.body);
+    var data = jsonDecode(getNomineeInfo.body);
     print("Nominee Info: " + data);    
     notifyListeners();
   }
 
 
   updatePersonalAddress(Map<String, dynamic> clientData) async {
-    Response personalAddressResponse = await post(
+    Response getAddress = await post(
       Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdatePrimaryAddress"),
       body: jsonEncode(
         {
@@ -173,14 +173,14 @@ class BseApiProvider extends ChangeNotifier {
         }
       )
     );
-    var data = jsonDecode(personalAddressResponse.body);
+    var data = jsonDecode(getAddress.body);
     print("Personal Address: " + data);    
     notifyListeners();
   }
 
   
   updateBankDetails(Map<String, dynamic> clientData) async {
-    Response bankDetailsResponse = await post(
+    Response getBankDetails = await post(
       Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdateBankDetails"),
       body: jsonEncode(
         {
@@ -190,7 +190,7 @@ class BseApiProvider extends ChangeNotifier {
         }
       )
     );
-    var data = jsonDecode(bankDetailsResponse.body);
+    var data = jsonDecode(getBankDetails.body);
     print("Bank Details: " + data);    
     notifyListeners();
   }
@@ -198,7 +198,7 @@ class BseApiProvider extends ChangeNotifier {
   
   
   updateFatcaDetails(Map<String, dynamic> clientData) async {
-    Response fatcaDetailsResponse = await post(
+    Response getFatcaDetails = await post(
       Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdateFatcaInfo"),
       body: jsonEncode(
         {
@@ -208,14 +208,14 @@ class BseApiProvider extends ChangeNotifier {
         }
       )
     );
-    var data = jsonDecode(fatcaDetailsResponse.body);
+    var data = jsonDecode(getFatcaDetails.body);
     print("FATCA Details: " + data);    
     notifyListeners();
   }
 
 
   clientDocSignDetails(Map<String, dynamic> clientData) async {
-    Response clientDocResponse = await post(
+    Response getClientDoc = await post(
       Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdateClientDocs"),
       body: jsonEncode(
         {
@@ -225,14 +225,14 @@ class BseApiProvider extends ChangeNotifier {
         }
       )
     );
-    var data = jsonDecode(clientDocResponse.body);
+    var data = jsonDecode(getClientDoc.body);
     print("Client Doc Sign Details: " + data);    
     notifyListeners();
   }
 
 
   clientDocChequeDetails(Map<String, dynamic> clientData) async {
-    Response clientDocResponse = await post(
+    Response getClientDoc = await post(
       Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdateClientDocs"),
       body: jsonEncode(
         {
@@ -242,7 +242,7 @@ class BseApiProvider extends ChangeNotifier {
         }
       )
     );
-    var data = jsonDecode(clientDocResponse.body);
+    var data = jsonDecode(getClientDoc.body);
     print("Client Doc Cheque Details: " + data);    
     notifyListeners();
   }

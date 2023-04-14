@@ -110,6 +110,14 @@ class SingleProfileProvider extends ChangeNotifier {
   }
 
 
+
+  Future<void> clearData() async {
+    _clientData.clear();
+    _clientDataSeparated.clear();
+    notifyListeners();
+  }
+
+
   //------- APPROVAL DATA MEMBERS -------//
   // PHOTO LIVE STATUS
   bool _photoLiveStatus = false;

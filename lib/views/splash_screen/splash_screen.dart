@@ -27,14 +27,16 @@ class _SplashScreenState extends State<SplashScreen> {
           body: {
             "FormNo": encryptString("1219")
           }
-        ).then((response) {   
-          log(response.toJson().toString());   
-          print(response.data!['clientDetailsForCheckerMaker'][0]);    
-          Provider.of<SingleProfileProvider>(context, listen: false).setClientData(response.data!['clientDetailsForCheckerMaker'][0]);
-          Provider.of<SingleProfileProvider>(context, listen: false).separateDetailsInClientData(response.data!['clientDetailsForCheckerMaker'][0]);
-          Navigation.pushReplacement(context: context, child: LayoutPage());
-          return response;
-        });      
+        );
+
+        log(responseModel.data!.toString());   
+        print("PRINT DATA: " + responseModel.data!['clientDetailsForCheckerMaker'][0].toString());    
+        Provider.of<SingleProfileProvider>(context, listen: false).setClientData(responseModel.data!['clientDetailsForCheckerMaker'][0]);
+        Provider.of<SingleProfileProvider>(context, listen: false).separateDetailsInClientData(responseModel.data!['clientDetailsForCheckerMaker'][0]);
+
+        log(Provider.of<SingleProfileProvider>(context, listen: false).clientDataSeparated.toString());
+
+        Navigation.pushReplacement(context: context, child: LayoutPage());
 
       });  
     super.initState();

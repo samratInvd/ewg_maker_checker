@@ -654,23 +654,23 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
                                       //   }
                                       // );
 
-                                      // print(setFinalStatusResponseModel.toJson());
+                                      // print(setFinalStatusResponseModel.toJson());                                      
+                                      String encVal = encryptStringBSE("1007|DA5A4D9B9D0845BAB5F754EE27E6615E5820230414120123|${singleProfileProvider.clientData['Gender']}|02|${singleProfileProvider.clientData['Father Name']}|${singleProfileProvider.clientData['First Name']} ${singleProfileProvider.clientData['Last Name']}|91-${singleProfileProvider.clientData['MobileNo']}|${singleProfileProvider.clientData['EmailId']}|||");                                      
 
-                                      print("1007|DA5A4D9B9D0845BAB5F754EE27E6615E5820230414120123|${singleProfileProvider.clientData['Gender']}|02|${singleProfileProvider.clientData['Father Name']}|${singleProfileProvider.clientData['First Name']} ${singleProfileProvider.clientData['Middle Name']} ${singleProfileProvider.clientData['Last Name']}|91-${singleProfileProvider.clientData['MobileNo']}|${singleProfileProvider.clientData['EmailId']}|||");
-                                      print(encryptStringBSE("1007|DA5A4D9B9D0845BAB5F754EE27E6615E5820230414120123|${singleProfileProvider.clientData['Gender']}|02|${singleProfileProvider.clientData['Father Name']}|${singleProfileProvider.clientData['First Name']} ${singleProfileProvider.clientData['Middle Name']} ${singleProfileProvider.clientData['Last Name']}|91-${singleProfileProvider.clientData['MobileNo']}|${singleProfileProvider.clientData['EmailId']}|||"));
+                                      Map<String, dynamic> body = {
+                                        "ParamValue": encVal
+                                      };
+
+
+                                      var jsonStringBody = jsonEncode(body);
 
 
                                       // PRIMARYINFO
-                                      Response updatePrimaryInfoResponse = await post(
+                                      Response response = await post(
                                         Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdatePersonalInfoPrimary"),
-                                        body:
-                                          {
-                                            "ParamValue": encryptStringBSE(
-                                              "1007|DA5A4D9B9D0845BAB5F754EE27E6615E5820230414120123|${singleProfileProvider.clientData['Gender']}|02|${singleProfileProvider.clientData['Father Name']}|${singleProfileProvider.clientData['First Name']} ${singleProfileProvider.clientData['Middle Name']} ${singleProfileProvider.clientData['Last Name']}|91-${singleProfileProvider.clientData['MobileNo']}|${singleProfileProvider.clientData['EmailId']}|||"
-                                            )
-                                          },      
+                                        body: jsonStringBody
                                       );
-                                      var data3 = jsonDecode(updatePrimaryInfoResponse.body);
+                                      var data3 = jsonDecode(response.body);
                                       print("Primary Info: " + data3);
 
 

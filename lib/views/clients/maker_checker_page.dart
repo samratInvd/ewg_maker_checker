@@ -30,169 +30,189 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
   String _ucc = "";
   String _sessionId = "";
 
-  callBseApis() async {
+
+  //------------ BSE APIS ------------//
+
+  callUCCandSessionID(Map<String, dynamic> clientData) async {
     String ipV4 = await Ipify.ipv4();
 
-    // // UCC
-    // Response getUCC = await post(
-    //   Uri.parse("http://jmbseapi.invd.in/api/ClientSignUp/SignUp"),
-    //   body: {
-    //     "ParamValue": encryptStringBSE("${clientData['First Name']} ${clientData['Middle Name'] == "null" || clientData['Middle Name'] == null ? "" : clientData['Middle Name']} ${clientData['Last Name']}|${clientData['EmailId']}|${clientData['MobileNo']}|${ipV4}|OWNCL00001")
-    //   }    
-    // );
-    // var data1 = jsonDecode(getUCC.body);
-    // print("UCC: " + jsonDecode(getUCC.body).toString());
-    // setState(() {
-    //   _ucc = data1['UCC'];
-    // });
+    // UCC
+    Response getUCC = await post(
+      Uri.parse("http://jmbseapi.invd.in/api/ClientSignUp/SignUp"),
+      body: {
+        "ParamValue": encryptStringBSE("${clientData['First Name']} ${clientData['Middle Name'] == "null" || clientData['Middle Name'] == null ? "" : clientData['Middle Name']} ${clientData['Last Name']}|${clientData['EmailId']}|${clientData['MobileNo']}|${ipV4}|OWNCL00001")
+      }    
+    );
+    var data1 = jsonDecode(getUCC.body);
+    print("UCC: " + jsonDecode(getUCC.body).toString());
+    setState(() {
+      _ucc = data1['UCC'];
+    });
 
-    // // SESSIONID
-    // Response getSessionIdResponse = await post(
-    //   Uri.parse("http://jmbseapi.invd.in/api/Common/GenerateClientSession"),
-    //   body: {
-    //     "ParamValue": encryptStringBSE("1002")
-    //   }      
-    // );    
-    // var data2 = jsonDecode(getSessionIdResponse.body);
-    // setState(() {
-    //   _sessionId = data2['SessionId'];
-    // });
-    // print("SESSION: " + jsonDecode(getSessionIdResponse.body).toString());        
-
-    // PRIMARYINFO
-    // Response updatePrimaryInfoResponse = await post(
-    //   Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdatePersonalInfoPrimary"),
-    //   body:
-    //     {
-    //       "ParamValue": encryptStringBSE(
-    //         "1007|DA5A4D9B9D0845BAB5F754EE27E6615E5820230414120123|${clientData['Gender']}|02|$clientData['Father Name']|${clientData['First Name']} ${clientData['Middle Name']} ${clientData['Last Name']}|91-${clientData['MobileNo']}|${clientData['EmailId']}|||"
-    //       )
-    //     }      
-    // );
-    // var data3 = jsonDecode(updatePrimaryInfoResponse.body);
-    // print("Primary Info: " + data3);
-
-
-    // //CLIENT TYPE
-    // Response getClientTypeResponse = await post(
-    //   Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdateClientType"),
-    //   body:
-    //     {
-    //       "ParamValue": encryptStringBSE(
-    //         "$_ucc|$_sessionId|single|01"
-    //       )
-    //     }      
-    // );
-    // var data4 = jsonDecode(getClientTypeResponse.body);
-    // print("Client Type: " + data4);
-
-    // // CVL
-    // String dob = clientData['DOB'];
-    // String year = dob.substring(6);
-    // String month = dob.substring(3, 5);
-    // String day = dob.substring(0, 2);
-    // dob = "$year-$month-$day";
-
-    // Response getCvlResponse = await post(
-    //   Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/CheckCVLPrimary"),
-    //   body:
-    //     {
-    //       "ParamValue": encryptStringBSE(
-    //         "$_ucc|$_sessionId|$clientData['PAN']|$dob"
-    //       )
-    //     }      
-    // );
-    // var data5 = jsonDecode(getCvlResponse.body);
-    // print("Cvl Data: " + data5);
-
-
-    // // NOMINEE INFO
-    // Response getNomineeInfo = await post(
-    //   Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdateNomineeInfo"),
-    //   body:
-    //     {
-    //       "ParamValue": encryptStringBSE(
-    //         "$_ucc|$_sessionId|${clientData['Nominee Name']}|DC"
-    //       )
-    //     }      
-    // );
-    // var data6 = jsonDecode(getNomineeInfo.body);
-    // print("Nominee Info: " + data6); 
-
-
-    // // ADDRESS
-    // Response getAddressResponse = await post(
-    //   Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdatePrimaryAddress"),
-    //   body:
-    //     {
-    //       "ParamValue": encryptStringBSE(
-    //         "$_ucc|$_sessionId|${clientData['Per Address 1']}, ${clientData['Per Address 2']}, ${clientData['Per Address 3']}|||${clientData['Per City']}|${stateCodes.where((element) => element['StateName'] == clientData['Per State'].toString().toUpperCase()).first['StateCode']}|${clientData['PerPincode']}"
-    //       )
-    //     }      
-    // );
-    // var data7 = jsonDecode(getAddressResponse.body);
-    // print("Personal Address: " + data7);
-
-
-    // // BANK DETAILS
-    // Response getBankDetailsResponse = await post(
-    //   Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdateBankDetails"),
-    //   body:
-    //     {
-    //       "ParamValue": encryptStringBSE(
-    //         "$_ucc|$_sessionId|SB|${clientData['Account No']}|${clientData['IFSC Code']}|Y"
-    //       )
-    //     }      
-    // );
-    // var data8 = jsonDecode(getBankDetailsResponse.body);
-    // print("Bank Details: " + data8);   
-
-
-    // // FATCA
-    // Response getFatcaDetailsResponse = await post(
-    //   Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdateFatcaInfo"),
-    //   body:
-    //     {
-    //       "ParamValue": encryptStringBSE(
-    //         "$_ucc|$_sessionId|01|${clientData['Per City']}|IN|IN|${clientData['PAN']}|C|01|32||N||"
-    //       )
-    //     }      
-    // );
-    // var data9 = jsonDecode(getFatcaDetailsResponse.body);
-    // print("FATCA Details: " + data9);   
-
-
-    // // SIGN
-    // Response getClientDoc = await post(
-    //   Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdateClientDocs"),
-    //   body:
-    //     {
-    //       "ParamValue": encryptStringBSE(
-    //         "$_ucc|$_sessionId|signature|${clientData['Sign Link']}"
-    //       )
-    //     }      
-    // );
-    // var data10 = jsonDecode(getClientDoc.body);
-    // print("Client Doc Sign Details: " + data10);
-
-
-    // // CHEQUE
-    // Response getClientDocCheque = await post(
-    //   Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdateClientDocs"),
-    //   body:
-    //     {
-    //       "ParamValue": encryptStringBSE(
-    //         "$_ucc|$_sessionId|bankproof|${clientData['Cheque Link']}"
-    //       )
-    //     }      
-    // );
-    // var data11 = jsonDecode(getClientDocCheque.body);
-    // print("Client Doc Cheque Details: " + data11);
-
+    // SESSIONID
+    Response getSessionIdResponse = await post(
+      Uri.parse("http://jmbseapi.invd.in/api/Common/GenerateClientSession"),
+      body: {
+        "ParamValue": encryptStringBSE("1002")
+      }      
+    );    
+    var data2 = jsonDecode(getSessionIdResponse.body);
+    setState(() {
+      _sessionId = data2['SessionId'];
+    });
+    print("SESSION: " + jsonDecode(getSessionIdResponse.body).toString());
   }
 
 
 
+  callUpdatePrimaryInfo(Map<String, dynamic> clientData) async {
+    // PRIMARYINFO
+    Response updatePrimaryInfoResponse = await post(
+      Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdatePersonalInfoPrimary"),
+      body:
+        {
+          "ParamValue": encryptStringBSE(
+            "||${clientData['Gender']}|02|$clientData['Father Name']|${clientData['First Name']} ${clientData['Middle Name']} ${clientData['Last Name']}|91-${clientData['MobileNo']}|${clientData['EmailId']}|||"
+          )
+        }      
+    );
+    var data3 = jsonDecode(updatePrimaryInfoResponse.body);
+    print("Primary Info: " + data3);
+  }   
+
+  callUpdateClientType(Map<String, dynamic> clientData) async {
+    //CLIENT TYPE
+    Response getClientTypeResponse = await post(
+      Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdateClientType"),
+      body:
+        {
+          "ParamValue": encryptStringBSE(
+            "$_ucc|$_sessionId|single|01"
+          )
+        }      
+    );
+    var data4 = jsonDecode(getClientTypeResponse.body);
+    print("Client Type: " + data4);
+  }   
+  
+
+  callCheckCVL(Map<String, dynamic> clientData) async {
+    // CVL
+    String dob = clientData['DOB'];
+    String year = dob.substring(6);
+    String month = dob.substring(3, 5);
+    String day = dob.substring(0, 2);
+    dob = "$year-$month-$day";
+
+    Response getCvlResponse = await post(
+      Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/CheckCVLPrimary"),
+      body:
+        {
+          "ParamValue": encryptStringBSE(
+            "$_ucc|$_sessionId|$clientData['PAN']|$dob"
+          )
+        }      
+    );
+    var data5 = jsonDecode(getCvlResponse.body);
+    print("Cvl Data: " + data5);
+  }
+
+  callUpdateNomineeInfo(Map<String, dynamic> clientData) async {
+     // NOMINEE INFO
+    Response getNomineeInfo = await post(
+      Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdateNomineeInfo"),
+      body:
+        {
+          "ParamValue": encryptStringBSE(
+            "$_ucc|$_sessionId|${clientData['Nominee Name']}|DC"
+          )
+        }      
+    );
+    var data6 = jsonDecode(getNomineeInfo.body);
+    print("Nominee Info: " + data6); 
+  }      
+
+  callUpdateAddress(Map<String, dynamic> clientData) async {
+    // ADDRESS
+    Response getAddressResponse = await post(
+      Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdatePrimaryAddress"),
+      body:
+        {
+          "ParamValue": encryptStringBSE(
+            "$_ucc|$_sessionId|${clientData['Per Address 1']}, ${clientData['Per Address 2']}, ${clientData['Per Address 3']}|||${clientData['Per City']}|${stateCodes.where((element) => element['StateName'] == clientData['Per State'].toString().toUpperCase()).first['StateCode']}|${clientData['PerPincode']}"
+          )
+        }      
+    );
+    var data7 = jsonDecode(getAddressResponse.body);
+    print("Personal Address: " + data7);
+  }   
+
+
+  callBankDetails(Map<String, dynamic> clientData) async {
+    // BANK DETAILS
+    Response getBankDetailsResponse = await post(
+      Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdateBankDetails"),
+      body:
+        {
+          "ParamValue": encryptStringBSE(
+            "$_ucc|$_sessionId|SB|${clientData['Account No']}|${clientData['IFSC Code']}|Y"
+          )
+        }      
+    );
+    var data8 = jsonDecode(getBankDetailsResponse.body);
+    print("Bank Details: " + data8);  
+  }    
+
+
+  callUpdateFatcaDetails(Map<String, dynamic> clientData) async {
+    // FATCA
+    Response getFatcaDetailsResponse = await post(
+      Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdateFatcaInfo"),
+      body:
+        {
+          "ParamValue": encryptStringBSE(
+            "$_ucc|$_sessionId|01|${clientData['Per City']}|IN|IN|${clientData['PAN']}|C|01|32||N||"
+          )
+        }      
+    );
+    var data9 = jsonDecode(getFatcaDetailsResponse.body);
+    print("FATCA Details: " + data9);
+  }
+
+
+  callSignDoc(Map<String, dynamic> clientData) async {
+    // SIGN
+    Response getClientDoc = await post(
+      Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdateClientDocs"),
+      body:
+        {
+          "ParamValue": encryptStringBSE(
+            "$_ucc|$_sessionId|signature|${clientData['Sign Link']}"
+          )
+        }      
+    );
+    var data10 = jsonDecode(getClientDoc.body);
+    print("Client Doc Sign Details: " + data10);
+  }
+
+
+  callChequeDoc(Map<String, dynamic> clientData) async {
+    // CHEQUE
+    Response getClientDocCheque = await post(
+      Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdateClientDocs"),
+      body:
+        {
+          "ParamValue": encryptStringBSE(
+            "$_ucc|$_sessionId|bankproof|${clientData['Cheque Link']}"
+          )
+        }      
+    );
+    var data11 = jsonDecode(getClientDocCheque.body);
+    print("Client Doc Cheque Details: " + data11);
+  }    
+
+
+  //------------ BSE APIS END ------------//
 
 
   @override
@@ -635,196 +655,54 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
                                     onPressed: () async {
                                       singleProfileProvider.setFinalStatus(1);
 
-                                      // print(singleProfileProvider.formNo.runtimeType);
-                                      // print(singleProfileProvider.clientData['PAN'].toString().runtimeType);
-                                      // print(singleProfileProvider.chequeStatus.toString().runtimeType);
-                                      // print(singleProfileProvider.signStatus.toString().runtimeType);
-                                      // print(singleProfileProvider.photoLiveStatus.toString().runtimeType);
-                                      // print(singleProfileProvider.finalStatus.toString().runtimeType);
+                                      print(singleProfileProvider.formNo.runtimeType);
+                                      print(singleProfileProvider.clientData['PAN'].toString().runtimeType);
+                                      print(singleProfileProvider.chequeStatus.toString().runtimeType);
+                                      print(singleProfileProvider.signStatus.toString().runtimeType);
+                                      print(singleProfileProvider.photoLiveStatus.toString().runtimeType);
+                                      print(singleProfileProvider.finalStatus.toString().runtimeType);
 
-                                      // ResponseModel setFinalStatusResponseModel = await apiProvider.postRequest(
-                                      //   endpoint: "api/RM/CheckerApproved",
-                                      //   body: {
-                                      //       "formNo": encryptString(singleProfileProvider.formNo),
-                                      //       "panNo": encryptString(singleProfileProvider.clientData['PAN'].toString()),
-                                      //       "chequeStatus": encryptString(singleProfileProvider.chequeStatus ? "1" : "0"),
-                                      //       "signStatus": encryptString(singleProfileProvider.signStatus  ? "1" : "0"),
-                                      //       "photo_VideoStatus": encryptString(singleProfileProvider.photoLiveStatus  ? "1" : "0"),
-                                      //       "finalStatus": encryptString(singleProfileProvider.finalStatus.toString())
-                                      //   }
-                                      // );
-
-                                      // print(setFinalStatusResponseModel.toJson());                                      
-                                      String encVal = encryptStringBSE("1007|DA5A4D9B9D0845BAB5F754EE27E6615E5820230414120123|${singleProfileProvider.clientData['Gender']}|02|${singleProfileProvider.clientData['Father Name']}|${singleProfileProvider.clientData['First Name']} ${singleProfileProvider.clientData['Last Name']}|91-${singleProfileProvider.clientData['MobileNo']}|${singleProfileProvider.clientData['EmailId']}|||");                                      
-
-                                      Map<String, dynamic> body = {
-                                        "ParamValue": encVal
-                                      };
+                                      ResponseModel setFinalStatusResponseModel = await apiProvider.postRequest(
+                                        endpoint: "api/RM/CheckerApproved",
+                                        body: {
+                                            "formNo": encryptString(singleProfileProvider.formNo),
+                                            "panNo": encryptString(singleProfileProvider.clientData['PAN'].toString()),
+                                            "chequeStatus": encryptString(singleProfileProvider.chequeStatus ? "1" : "0"),
+                                            "signStatus": encryptString(singleProfileProvider.signStatus  ? "1" : "0"),
+                                            "photo_VideoStatus": encryptString(singleProfileProvider.photoLiveStatus  ? "1" : "0"),
+                                            "finalStatus": encryptString(singleProfileProvider.finalStatus.toString())
+                                        }
+                                      );     
 
 
-                                      var jsonStringBody = jsonEncode(body);
+                                      callUCCandSessionID(singleProfileProvider.clientData).then((value) async {
+
+                                        callUpdatePrimaryInfo(singleProfileProvider.clientData);
+                                        callCheckCVL(singleProfileProvider.clientData);
+                                        callUpdateClientType(singleProfileProvider.clientData);
+                                        callUpdateAddress(singleProfileProvider.clientData);
+                                        callBankDetails(singleProfileProvider.clientData);
+                                        callUpdateFatcaDetails(singleProfileProvider.clientData);
+                                        callUpdateNomineeInfo(singleProfileProvider.clientData);
+                                        callSignDoc(singleProfileProvider.clientData);
+                                        callChequeDoc(singleProfileProvider.clientData);
 
 
-                                      // PRIMARYINFO
-                                      Response response = await post(
-                                        Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdatePersonalInfoPrimary"),
-                                        body: jsonStringBody
-                                      );
-                                      var data3 = jsonDecode(response.body);
-                                      print("Primary Info: " + data3);
+                                        // MAP MF UCC WITH JM UCC
+                                        ResponseModel mapUccResponse = await apiProvider.postRequest(
+                                          endpoint: 'api/BSEAPI/UpdateUCC',
+                                          body: {
+                                            "formNo": encryptString(_searchController.text),
+                                            "mf_UCC": encryptString(_ucc),
+                                            "ucc": encryptString(singleProfileProvider.clientData['JMUCC'])
+                                          }
+                                          
+                                        );
 
+                                        print("UCC SAVE RESPONSE: " + mapUccResponse.toJson().toString());
 
-                                      //CLIENT TYPE
-                                      // Response getClientTypeResponse = await post(
-                                      //   Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdateClientType"),
-                                      //   body:
-                                      //     {
-                                      //       "ParamValue": encryptStringBSE(
-                                      //         "$_ucc|$_sessionId|single|01"
-                                      //       )
-                                      //     }      
-                                      // );
-                                      // var data4 = jsonDecode(getClientTypeResponse.body);
-                                      // print("Client Type: " + data4);
-
-                                      // // CVL
-                                      // String dob = singleProfileProvider.clientData['DOB'];
-                                      // String year = dob.substring(6);
-                                      // String month = dob.substring(3, 5);
-                                      // String day = dob.substring(0, 2);
-                                      // dob = "$year-$month-$day";
-
-                                      // Response getCvlResponse = await post(
-                                      //   Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/CheckCVLPrimary"),
-                                      //   body:
-                                      //     {
-                                      //       "ParamValue": encryptStringBSE(
-                                      //         "$_ucc|$_sessionId|$singleProfileProvider.clientData['PAN']|$dob"
-                                      //       )
-                                      //     }      
-                                      // );
-                                      // var data5 = jsonDecode(getCvlResponse.body);
-                                      // print("Cvl Data: " + data5);
-
-
-                                      // // NOMINEE INFO
-                                      // Response getNomineeInfo = await post(
-                                      //   Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdateNomineeInfo"),
-                                      //   body:
-                                      //     {
-                                      //       "ParamValue": encryptStringBSE(
-                                      //         "$_ucc|$_sessionId|${singleProfileProvider.clientData['Nominee Name']}|DC"
-                                      //       )
-                                      //     }      
-                                      // );
-                                      // var data6 = jsonDecode(getNomineeInfo.body);
-                                      // print("Nominee Info: " + data6); 
-
-
-                                      // // ADDRESS
-                                      // Response getAddressResponse = await post(
-                                      //   Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdatePrimaryAddress"),
-                                      //   body:
-                                      //     {
-                                      //       "ParamValue": encryptStringBSE(
-                                      //         "$_ucc|$_sessionId|${singleProfileProvider.clientData['Per Address 1']}, ${singleProfileProvider.clientData['Per Address 2']}, ${singleProfileProvider.clientData['Per Address 3']}|||${singleProfileProvider.clientData['Per City']}|${stateCodes.where((element) => element['StateName'] == singleProfileProvider.clientData['Per State'].toString().toUpperCase()).first['StateCode']}|${singleProfileProvider.clientData['PerPincode']}"
-                                      //       )
-                                      //     }      
-                                      // );
-                                      // var data7 = jsonDecode(getAddressResponse.body);
-                                      // print("Personal Address: " + data7);
-
-
-                                      // // BANK DETAILS
-                                      // Response getBankDetailsResponse = await post(
-                                      //   Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdateBankDetails"),
-                                      //   body:
-                                      //     {
-                                      //       "ParamValue": encryptStringBSE(
-                                      //         "$_ucc|$_sessionId|SB|${singleProfileProvider.clientData['Account No']}|${singleProfileProvider.clientData['IFSC Code']}|Y"
-                                      //       )
-                                      //     }      
-                                      // );
-                                      // var data8 = jsonDecode(getBankDetailsResponse.body);
-                                      // print("Bank Details: " + data8);   
-
-
-                                      // // FATCA
-                                      // Response getFatcaDetailsResponse = await post(
-                                      //   Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdateFatcaInfo"),
-                                      //   body:
-                                      //     {
-                                      //       "ParamValue": encryptStringBSE(
-                                      //         "$_ucc|$_sessionId|01|${singleProfileProvider.clientData['Per City']}|IN|IN|${singleProfileProvider.clientData['PAN']}|C|01|32||N||"
-                                      //       )
-                                      //     }      
-                                      // );
-                                      // var data9 = jsonDecode(getFatcaDetailsResponse.body);
-                                      // print("FATCA Details: " + data9);   
-
-
-                                      // // SIGN
-                                      // Response getClientDoc = await post(
-                                      //   Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdateClientDocs"),
-                                      //   body:
-                                      //     {
-                                      //       "ParamValue": encryptStringBSE(
-                                      //         "$_ucc|$_sessionId|signature|${singleProfileProvider.clientData['Sign Link']}"
-                                      //       )
-                                      //     }      
-                                      // );
-                                      // var data10 = jsonDecode(getClientDoc.body);
-                                      // print("Client Doc Sign Details: " + data10);
-
-
-                                      // // CHEQUE
-                                      // Response getClientDocCheque = await post(
-                                      //   Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdateClientDocs"),
-                                      //   body:
-                                      //     {
-                                      //       "ParamValue": encryptStringBSE(
-                                      //         "$_ucc|$_sessionId|bankproof|${singleProfileProvider.clientData['Cheque Link']}"
-                                      //       )
-                                      //     }      
-                                      // );
-                                      // var data11 = jsonDecode(getClientDocCheque.body);
-                                      // print("Client Doc Cheque Details: " + data11);
-
-
-
-
-
-
-
-
-
-
-
-                                      // callBseApis().then((value) async {
-
-                                      //     //TODO: RESTORE UCC SAVE API
-                                      //     // ResponseModel mapUccResponse = await apiProvider.postRequest(
-                                      //     //   endpoint: 'api/BSEAPI/UpdateUCC',
-                                      //     //   body: {
-                                      //     //     "formNo": encryptString(_searchController.text),
-                                      //     //     "mf_UCC": encryptString(_ucc),
-                                      //     //     "ucc": encryptString(singleProfileProvider.clientData['JMUCC'])
-                                      //     //   }
-                                            
-                                      //     // );
-
-                                      //     // print("UCC SAVE RESPONSE: " + mapUccResponse.toJson().toString());
-
-                                      //     return value;
-                                      //   });                                       
-
-                                      // TODO: Clarify about the endpoint of saving details
-                                      // Saving all the approved Details
-                                      // ResponseModel responseModel = await apiProvider.postRequest(
-                                      //   endpoint: ""
-                                      // );                                      
-
-                                      // bseApiProvider.onboarding(singleProfileProvider.clientData);
+                                        return value;
+                                      });                                                                                                                                                                                                                      
 
                                     },
                                     child: Center(child: Text("Approve", style: TextStyle(color: Colors.white, fontFamily: 'SemiBold'),)),

@@ -152,105 +152,117 @@ class SingleProfileProvider extends ChangeNotifier {
   }
 
 
+  List<dynamic> _allClients = [];
+  List<dynamic> get allClients => _allClients;
+  void setAllClients(List<dynamic> clients) {
+    _allClients.add(clients);
+    notifyListeners();
+  } 
 
-  //------- CALL BSE APIS TO REGISTER THE CLIENT TO BSE FOR TRANSACTIONS -------//
-  String _ucc = "";
-  String get ucc => _ucc;
-  setUcc(String ucc) {
-    _ucc = ucc;
+  void clearAllClients() {
+    _allClients.clear();
     notifyListeners();
   }
 
-  String _sessionId = "";
-  String get sessionId => _sessionId;
-  setSessionId(String sessionId) {
-    _sessionId = sessionId;
-    notifyListeners();
-  }
 
-  Future<void> callBseApis(context, Map<String, dynamic> data) async {
-    String ip4String = await Ipify.ipv4();
+  // //------- CALL BSE APIS TO REGISTER THE CLIENT TO BSE FOR TRANSACTIONS -------//
+  // String _ucc = "";
+  // String get ucc => _ucc;
+  // setUcc(String ucc) {
+  //   _ucc = ucc;
+  //   notifyListeners();
+  // }
+
+  // String _sessionId = "";
+  // String get sessionId => _sessionId;
+  // setSessionId(String sessionId) {
+  //   _sessionId = sessionId;
+  //   notifyListeners();
+  // }
+
+  // Future<void> callBseApis(context, Map<String, dynamic> data) async {
+  //   String ip4String = await Ipify.ipv4();
     
-    // UCC CREATION
-    Response response1 = await post(
-      Uri.parse("http://jmbseapi.invd.in/api/ClientSignUp/SignUp"),
-      body: jsonEncode({
-        "ParamValue": encryptStringBSE("${data['First Name']} ${data['Middle Name']} ${data['Last Name']}|${data['EmailId']}|${data['MobileNo']}|$ip4String|OWNCL00001")
-      })
-    );
-    print(jsonDecode(response1.body));
-    Map<String, dynamic> uccResponseData = jsonDecode(response1.body);
-    setUcc(uccResponseData['UCC']);
+  //   // UCC CREATION
+  //   Response response1 = await post(
+  //     Uri.parse("http://jmbseapi.invd.in/api/ClientSignUp/SignUp"),
+  //     body: jsonEncode({
+  //       "ParamValue": encryptStringBSE("${data['First Name']} ${data['Middle Name']} ${data['Last Name']}|${data['EmailId']}|${data['MobileNo']}|$ip4String|OWNCL00001")
+  //     })
+  //   );
+  //   print(jsonDecode(response1.body));
+  //   Map<String, dynamic> uccResponseData = jsonDecode(response1.body);
+  //   setUcc(uccResponseData['UCC']);
 
-    // SESSION ID CREATION
-    Response response2 = await post(
-      Uri.parse("http://jmbseapi.invd.in/api/Common/GenerateClientSession"),
-      body: jsonEncode({
-        "ParamValue": encryptStringBSE("$_ucc")
-      })
-    );
-    print(jsonDecode(response2.body));
-    Map<String, dynamic> sessionIdResponseData = jsonDecode(response2.body);
-    setUcc(sessionIdResponseData['SessionId']);
+  //   // SESSION ID CREATION
+  //   Response response2 = await post(
+  //     Uri.parse("http://jmbseapi.invd.in/api/Common/GenerateClientSession"),
+  //     body: jsonEncode({
+  //       "ParamValue": encryptStringBSE("$_ucc")
+  //     })
+  //   );
+  //   print(jsonDecode(response2.body));
+  //   Map<String, dynamic> sessionIdResponseData = jsonDecode(response2.body);
+  //   setUcc(sessionIdResponseData['SessionId']);
 
-    // UDPATE PERSONAL INFO
-    Response response3= await post(
-      Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdatePersonalInfoPrimary"),
-      body: jsonEncode({
-        "ParamValue": encryptStringBSE("$_ucc|$_sessionId|${data['Gender']}|01|${data['Middle Name']}|${data['First Name']} ${data['Middle Name']} ${data['Last Name']}|91-${data['MobileNo']}|${data['EmailId']}||")
-      })
-    );
-    print(jsonDecode(response3.body));
+  //   // UDPATE PERSONAL INFO
+  //   Response response3= await post(
+  //     Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdatePersonalInfoPrimary"),
+  //     body: jsonEncode({
+  //       "ParamValue": encryptStringBSE("$_ucc|$_sessionId|${data['Gender']}|01|${data['Middle Name']}|${data['First Name']} ${data['Middle Name']} ${data['Last Name']}|91-${data['MobileNo']}|${data['EmailId']}||")
+  //     })
+  //   );
+  //   print(jsonDecode(response3.body));
 
-    // UPDATE CLIENT TYPE
-    Response response4 = await post(
-      Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdateClientType"),
-      body: jsonEncode({
-        "ParamValue": encryptStringBSE("$_ucc|$_sessionId|single|01")
-      })
-    );
-    print(jsonDecode(response4.body));
+  //   // UPDATE CLIENT TYPE
+  //   Response response4 = await post(
+  //     Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdateClientType"),
+  //     body: jsonEncode({
+  //       "ParamValue": encryptStringBSE("$_ucc|$_sessionId|single|01")
+  //     })
+  //   );
+  //   print(jsonDecode(response4.body));
 
-    // UPDATE NOMINEE INFO
-    Response response5 = await post(
-      Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdateNomineeInfo"),
-      body: jsonEncode({
-        "ParamValue": encryptStringBSE("$_ucc|$_sessionId|${data['Nominee Name']}|DC")
-      })
-    );
-    print(jsonDecode(response5.body));
+  //   // UPDATE NOMINEE INFO
+  //   Response response5 = await post(
+  //     Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdateNomineeInfo"),
+  //     body: jsonEncode({
+  //       "ParamValue": encryptStringBSE("$_ucc|$_sessionId|${data['Nominee Name']}|DC")
+  //     })
+  //   );
+  //   print(jsonDecode(response5.body));
 
-    // UPDATE PRIMARY ADDRESS
-    Response response6 = await post(
-      Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdatePrimaryAddress"),
-      body: jsonEncode({
-        "ParamValue": encryptStringBSE("$_ucc|$_sessionId|${data['Per Address 1']},${data['Per Address 2']},${data['Per Address 3']}|${data['Place of birth']}|MA|${data['PerPincode']}")
-      })
-    );
-    print(jsonDecode(response6.body));
+  //   // UPDATE PRIMARY ADDRESS
+  //   Response response6 = await post(
+  //     Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UpdatePrimaryAddress"),
+  //     body: jsonEncode({
+  //       "ParamValue": encryptStringBSE("$_ucc|$_sessionId|${data['Per Address 1']},${data['Per Address 2']},${data['Per Address 3']}|${data['Place of birth']}|MA|${data['PerPincode']}")
+  //     })
+  //   );
+  //   print(jsonDecode(response6.body));
 
-    // UPDATE BANK DETAILS
-    // Response response7 = await post(
-    //   Uri.parse("http://jmbseapi.invd.in/api/ClientSignUp/SignUp"),
-    //   body: jsonEncode({
-    //     "ParamValue": encryptStringBSE("${data['First Name']} ${data['Middle Name']} ${data['Last Name']}|${data['EmailId']}|${data['MobileNo']}|$ip4String|OWNCL00001")
-    //   })
-    // );
+  //   // UPDATE BANK DETAILS
+  //   // Response response7 = await post(
+  //   //   Uri.parse("http://jmbseapi.invd.in/api/ClientSignUp/SignUp"),
+  //   //   body: jsonEncode({
+  //   //     "ParamValue": encryptStringBSE("${data['First Name']} ${data['Middle Name']} ${data['Last Name']}|${data['EmailId']}|${data['MobileNo']}|$ip4String|OWNCL00001")
+  //   //   })
+  //   // );
 
-    // // UCC CREATION
-    // Response response1 = await post(
-    //   Uri.parse("http://jmbseapi.invd.in/api/ClientSignUp/SignUp"),
-    //   body: jsonEncode({
-    //     "ParamValue": encryptStringBSE("${data['First Name']} ${data['Middle Name']} ${data['Last Name']}|${data['EmailId']}|${data['MobileNo']}|$ip4String|OWNCL00001")
-    //   })
-    // );
+  //   // // UCC CREATION
+  //   // Response response1 = await post(
+  //   //   Uri.parse("http://jmbseapi.invd.in/api/ClientSignUp/SignUp"),
+  //   //   body: jsonEncode({
+  //   //     "ParamValue": encryptStringBSE("${data['First Name']} ${data['Middle Name']} ${data['Last Name']}|${data['EmailId']}|${data['MobileNo']}|$ip4String|OWNCL00001")
+  //   //   })
+  //   // );
 
-    // // UCC CREATION
-    // Response response1 = await post(
-    //   Uri.parse("http://jmbseapi.invd.in/api/ClientSignUp/SignUp"),
-    //   body: jsonEncode({
-    //     "ParamValue": encryptStringBSE("${data['First Name']} ${data['Middle Name']} ${data['Last Name']}|${data['EmailId']}|${data['MobileNo']}|$ip4String|OWNCL00001")
-    //   })
-    // );
-  }
+  //   // // UCC CREATION
+  //   // Response response1 = await post(
+  //   //   Uri.parse("http://jmbseapi.invd.in/api/ClientSignUp/SignUp"),
+  //   //   body: jsonEncode({
+  //   //     "ParamValue": encryptStringBSE("${data['First Name']} ${data['Middle Name']} ${data['Last Name']}|${data['EmailId']}|${data['MobileNo']}|$ip4String|OWNCL00001")
+  //   //   })
+  //   // );
+  // }
 }

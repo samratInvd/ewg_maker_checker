@@ -19,8 +19,25 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
+
+    Provider.of<SingleProfileProvider>(context, listen: false).clearAllClients();          
+
     Provider.of<ApiProvider>(context, listen: false).postRequestAuth()
       .then((_) async {
+
+
+        // Fetching all the client details from 1200 to 1300
+        // for(int formNo = 1220; formNo < 1301; formNo++) {
+        //    ResponseModel allClientsResponseModel = await Provider.of<ApiProvider>(context, listen: false).postRequest(
+        //     endpoint: 'api/RM/Get_ClientDetailsForChecker',
+        //     body: {
+        //       "FormNo": encryptString("1223")
+        //     }
+        //   );
+
+        //   Provider.of<SingleProfileProvider>(context, listen: false).setAllClients(allClientsResponseModel.data!['clientDetailsForCheckerMaker'][0]);          
+        //   print(allClientsResponseModel.toJson());
+        // }
 
         ResponseModel responseModel = await Provider.of<ApiProvider>(context, listen: false).postRequest(
           endpoint: 'api/RM/Get_ClientDetailsForChecker',

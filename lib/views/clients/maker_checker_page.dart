@@ -33,7 +33,7 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
 
   //------------ BSE APIS ------------//
 
-  callUCCandSessionID(Map<String, dynamic> clientData) async {
+  callUCC(Map<String, dynamic> clientData) async {
     String ipV4 = await Ipify.ipv4();
 
     // UCC
@@ -48,12 +48,16 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
     setState(() {
       _ucc = data1['UCC'];
     });
+  }
 
+
+  // SESSION ID
+  callSessionId() async {
     // SESSIONID
     Response getSessionIdResponse = await post(
       Uri.parse("http://jmbseapi.invd.in/api/Common/GenerateClientSession"),
       body: {
-        "ParamValue": encryptStringBSE("1002")
+        "ParamValue": encryptStringBSE("$_ucc")
       }      
     );    
     var data2 = jsonDecode(getSessionIdResponse.body);
@@ -61,7 +65,8 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
       _sessionId = data2['SessionId'];
     });
     print("SESSION: " + jsonDecode(getSessionIdResponse.body).toString());
-  }
+    print("SESSIONID: " + _sessionId);
+  }      
 
 
 
@@ -72,7 +77,7 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
       body:
         {
           "ParamValue": encryptStringBSE(
-            "||${clientData['Gender']}|02|$clientData['Father Name']|${clientData['First Name']} ${clientData['Middle Name']} ${clientData['Last Name']}|91-${clientData['MobileNo']}|${clientData['EmailId']}|||"
+            "$_ucc|$_sessionId|${clientData['Gender']}|02|$clientData['Father Name']|${clientData['First Name']} ${clientData['Middle Name']} ${clientData['Last Name']}|91-${clientData['MobileNo']}|${clientData['EmailId']}|||"
           )
         }      
     );
@@ -672,37 +677,58 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
                                             "photo_VideoStatus": encryptString(singleProfileProvider.photoLiveStatus  ? "1" : "0"),
                                             "finalStatus": encryptString(singleProfileProvider.finalStatus.toString())
                                         }
-                                      );     
+                                      );                                           
 
 
-                                      callUCCandSessionID(singleProfileProvider.clientData).then((value) async {
+                                      callUCC(singleProfileProvider.clientData).then((value) async {
 
-                                        callUpdatePrimaryInfo(singleProfileProvider.clientData);
-                                        callCheckCVL(singleProfileProvider.clientData);
-                                        callUpdateClientType(singleProfileProvider.clientData);
-                                        callUpdateAddress(singleProfileProvider.clientData);
-                                        callBankDetails(singleProfileProvider.clientData);
-                                        callUpdateFatcaDetails(singleProfileProvider.clientData);
-                                        callUpdateNomineeInfo(singleProfileProvider.clientData);
-                                        callSignDoc(singleProfileProvider.clientData);
-                                        callChequeDoc(singleProfileProvider.clientData);
-
-
-                                        // MAP MF UCC WITH JM UCC
-                                        ResponseModel mapUccResponse = await apiProvider.postRequest(
-                                          endpoint: 'api/BSEAPI/UpdateUCC',
-                                          body: {
-                                            "formNo": encryptString(_searchController.text),
-                                            "mf_UCC": encryptString(_ucc),
-                                            "ucc": encryptString(singleProfileProvider.clientData['JMUCC'])
+                                        showDialog(
+                                          context: context, 
+                                          builder: (context) {
+                                            return AlertDialog(
+                                              content: Text("Approval Confirmed! MF UCC: $_ucc", style: TextStyle(fontFamily: 'SemiBold', color: Color(0xff461257)),),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  }, 
+                                                  child: Text("Ok", style: TextStyle(color: Color(0xff461257)),)
+                                                )
+                                              ],
+                                            );
                                           }
-                                          
                                         );
 
-                                        print("UCC SAVE RESPONSE: " + mapUccResponse.toJson().toString());
+                                        callSessionId().then((value) async {
+                                          callUpdatePrimaryInfo(singleProfileProvider.clientData);
+                                          callCheckCVL(singleProfileProvider.clientData);
+                                          callUpdateClientType(singleProfileProvider.clientData);
+                                          callUpdateAddress(singleProfileProvider.clientData);
+                                          callBankDetails(singleProfileProvider.clientData);
+                                          callUpdateFatcaDetails(singleProfileProvider.clientData);
+                                          callUpdateNomineeInfo(singleProfileProvider.clientData);
+                                          callSignDoc(singleProfileProvider.clientData);
+                                          callChequeDoc(singleProfileProvider.clientData);
+                                        
 
-                                        return value;
-                                      });                                                                                                                                                                                                                      
+                                          // MAP MF UCC WITH JM UCC
+                                          ResponseModel mapUccResponse = await apiProvider.postRequest(
+                                            endpoint: 'api/BSEAPI/UpdateUCC',
+                                            body: {
+                                              "formNo": encryptString(_searchController.text),
+                                              "mf_UCC": encryptString(_ucc),
+                                              "ucc": encryptString(singleProfileProvider.clientData['JMUCC'])
+                                            }
+                                            
+                                          );
+
+                                          print("UCC SAVE RESPONSE: " + mapUccResponse.toJson().toString());
+
+                                          return value;
+                                        });
+
+                                        return value;                                        
+                                      });                                                                                                                                                                                                                       
 
                                     },
                                     child: Center(child: Text("Approve", style: TextStyle(color: Colors.white, fontFamily: 'SemiBold'),)),

@@ -43,10 +43,10 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
         "ParamValue": encryptStringBSE("${clientData['First Name']} ${clientData['Middle Name'] == "null" || clientData['Middle Name'] == null ? "" : clientData['Middle Name']} ${clientData['Last Name']}|${clientData['EmailId']}|${clientData['MobileNo']}|${ipV4}|OWNCL00001")
       }    
     );
-    var data1 = jsonDecode(getUCC.body);
+    var data = jsonDecode(getUCC.body);
     print("UCC: " + jsonDecode(getUCC.body).toString());
     setState(() {
-      _ucc = data1['UCC'];
+      _ucc = data['UCC'];
     });
   }
 
@@ -60,9 +60,9 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
         "ParamValue": encryptStringBSE("$_ucc")
       }      
     );    
-    var data2 = jsonDecode(getSessionIdResponse.body);
+    var data = jsonDecode(getSessionIdResponse.body);
     setState(() {
-      _sessionId = data2['SessionId'];
+      _sessionId = data['SessionId'];
     });
     print("SESSION: " + jsonDecode(getSessionIdResponse.body).toString());
     print("SESSIONID: " + _sessionId);
@@ -77,12 +77,12 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
       body:
         {
           "ParamValue": encryptStringBSE(
-            "$_ucc|$_sessionId|${clientData['Gender']}|02|$clientData['Father Name']|${clientData['First Name']} ${clientData['Middle Name']} ${clientData['Last Name']}|91-${clientData['MobileNo']}|${clientData['EmailId']}|||"
+            "$_ucc|$_sessionId|${clientData['Gender']}|02|${clientData['Father Name']}|${clientData['First Name']} ${clientData['Middle Name']} ${clientData['Last Name']}|91-${clientData['MobileNo']}|${clientData['EmailId']}|||"
           )
         }      
     );
-    var data3 = jsonDecode(updatePrimaryInfoResponse.body);
-    print("Primary Info: " + data3);
+    var data = jsonDecode(updatePrimaryInfoResponse.body);
+    print("Primary Info: " + data);
   }   
 
   callUpdateClientType(Map<String, dynamic> clientData) async {
@@ -96,8 +96,8 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
           )
         }      
     );
-    var data4 = jsonDecode(getClientTypeResponse.body);
-    print("Client Type: " + data4);
+    var data = jsonDecode(getClientTypeResponse.body);
+    print("Client Type: " + data);
   }   
   
 
@@ -114,12 +114,12 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
       body:
         {
           "ParamValue": encryptStringBSE(
-            "$_ucc|$_sessionId|$clientData['PAN']|$dob"
+            "$_ucc|$_sessionId|${clientData['PAN']}|$dob"
           )
         }      
     );
-    var data5 = jsonDecode(getCvlResponse.body);
-    print("Cvl Data: " + data5);
+    var data = jsonDecode(getCvlResponse.body);
+    print("Cvl Data: " + data);
   }
 
   callUpdateNomineeInfo(Map<String, dynamic> clientData) async {
@@ -133,8 +133,8 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
           )
         }      
     );
-    var data6 = jsonDecode(getNomineeInfo.body);
-    print("Nominee Info: " + data6); 
+    var data = jsonDecode(getNomineeInfo.body);
+    print("Nominee Info: " + data); 
   }      
 
   callUpdateAddress(Map<String, dynamic> clientData) async {
@@ -148,8 +148,8 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
           )
         }      
     );
-    var data7 = jsonDecode(getAddressResponse.body);
-    print("Personal Address: " + data7);
+    var data = jsonDecode(getAddressResponse.body);
+    print("Personal Address: " + data);
   }   
 
 
@@ -164,8 +164,8 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
           )
         }      
     );
-    var data8 = jsonDecode(getBankDetailsResponse.body);
-    print("Bank Details: " + data8);  
+    var data = jsonDecode(getBankDetailsResponse.body);
+    print("Bank Details: " + data);
   }    
 
 
@@ -180,8 +180,8 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
           )
         }      
     );
-    var data9 = jsonDecode(getFatcaDetailsResponse.body);
-    print("FATCA Details: " + data9);
+    var data = jsonDecode(getFatcaDetailsResponse.body);
+    print("FATCA Details: " + data);
   }
 
 
@@ -196,8 +196,8 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
           )
         }      
     );
-    var data10 = jsonDecode(getClientDoc.body);
-    print("Client Doc Sign Details: " + data10);
+    var data = jsonDecode(getClientDoc.body);
+    print("Client Doc Sign Details: " + data);
   }
 
 
@@ -212,8 +212,26 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
           )
         }      
     );
-    var data11 = jsonDecode(getClientDocCheque.body);
-    print("Client Doc Cheque Details: " + data11);
+    var data = jsonDecode(getClientDocCheque.body);
+    print("Client Doc Cheque Details: " + data);
+  }  
+
+
+
+
+  uploadDataToBSE() async {
+    // CHEQUE
+    Response getClientDocCheque = await post(
+      Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/UploadDataToBSE"),
+      body:
+        {
+          "ParamValue": encryptStringBSE(
+            "$_ucc|$_sessionId"
+          )
+        }      
+    );
+    var data = jsonDecode(getClientDocCheque.body);
+    print("Client Doc Cheque Details: " + data);
   }    
 
 
@@ -709,6 +727,13 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
                                           callUpdateNomineeInfo(singleProfileProvider.clientData);
                                           callSignDoc(singleProfileProvider.clientData);
                                           callChequeDoc(singleProfileProvider.clientData);
+
+
+                                          // UPLOADING THE DATA TO BSE
+                                          Future.delayed(Duration(seconds: 2), () {
+                                            uploadDataToBSE();
+                                          });
+
                                         
 
                                           // MAP MF UCC WITH JM UCC

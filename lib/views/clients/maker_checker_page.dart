@@ -30,6 +30,8 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
   String _ucc = "";
   String _sessionId = "";
 
+  bool _isClientApproved = false;
+
 
   //------------ BSE APIS ------------//
 
@@ -778,6 +780,10 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
     );
   }
 }
+
+
+
+
 
 
 

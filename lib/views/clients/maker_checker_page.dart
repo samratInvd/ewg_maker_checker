@@ -42,7 +42,7 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
     Response getUCC = await post(
       Uri.parse("https://jmbseapi.invd.in/api/ClientSignUp/SignUp"),
       body: {
-        "ParamValue": encryptStringBSE("${clientData['First Name']} ${clientData['Middle Name'] == "null" || clientData['Middle Name'] == null ? "" : clientData['Middle Name']} ${clientData['Last Name']}|${clientData['EmailId']}|${clientData['MobileNo']}|${ipV4}|OWNCL00001")
+        "ParamValue": encryptStringBSE("${clientData['First Name']} ${clientData['Middle Name'] == "null" || clientData['Middle Name'] == null ? "" : clientData['Middle Name']} ${clientData['Last Name']}|${clientData['EmailId']}|${clientData['MobileNo']}|${ipV4}|OWNCL00001|${clientData['JMUCC']}")
       }    
     );
     var data = jsonDecode(getUCC.body);
@@ -290,7 +290,18 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
                               print("CLIENT DATA SEPARATED: " + singleProfileProvider.clientDataSeparated.toString());
                               print(singleProfileProvider.clientData);
                               singleProfileProvider.setFormNo(value);
-                              setState(() {});
+                              
+                              // CHECKING IF THE CLIENT IS APPROVED OR NOT
+                              if(singleProfileProvider.clientData['Final_Status'] == 1) {
+                                setState(() {
+                                  _isClientApproved = true;
+                                });
+                              } else {
+                                setState(() {
+                                  _isClientApproved = false;
+                                });
+                              }
+
                               return response;
                             });      
 
@@ -319,9 +330,21 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
 
                                     // Populating the new data  
                                     singleProfileProvider.setClientData(response.data!['clientDetailsForCheckerMaker'][0]);
-                                    singleProfileProvider.separateDetailsInClientData(response.data!['clientDetailsForCheckerMaker'][0]);
+                                    singleProfileProvider.separateDetailsInClientData(response.data!['clientDetailsForCheckerMaker'][0]);                                    
                                     print("CLIENT DATA SEPARATED: " + singleProfileProvider.clientDataSeparated.toString());
-                                    setState(() {});
+
+
+                                    // CHECKING IF THE CLIENT IS APPROVED OR NOT
+                                    if(singleProfileProvider.clientData['Final_Status'] == 1) {
+                                      setState(() {
+                                        _isClientApproved = true;
+                                      });
+                                    } else {
+                                      setState(() {
+                                        _isClientApproved = false;
+                                      });
+                                    }
+                                    
                                     return response;
                                   });      
 
@@ -654,117 +677,133 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
                             SizedBox(height: 20,),
                             PdfExpansionTile(title: "Esign PDF", pdfUrl: singleProfileProvider.clientData['Esign PDF']),
                             SizedBox(height: 20,),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                SizedBox(
-                                  height: 40,
-                                  width: MediaQuery.of(context).size.width * 0.1,
-                                  child: MaterialButton(
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                                    color: Color(0xff461257),
-                                    onPressed: () {
-                                      print("CLIENT DATA =====> " + Provider.of<SingleProfileProvider>(context, listen: false).clientData.toString());
-                                      // bseApiProvider.onboarding(context, _searchController.text, singleProfileProvider.clientData);
-                                    },
-                                    child: Center(child: Text("Resend", style: TextStyle(color: Colors.white, fontFamily: 'SemiBold'),)),
-                                  ),
-                                ),
-                                SizedBox(width: 10,),
-                                SizedBox(
-                                  height: 40,
-                                  width: MediaQuery.of(context).size.width * 0.1,
-                                  child: MaterialButton(
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                                    color: Color(0xff461257),
-                                    onPressed: () async {
-                                      singleProfileProvider.setFinalStatus(1);
-
-                                      print(singleProfileProvider.formNo.runtimeType);
-                                      print(singleProfileProvider.clientData['PAN'].toString().runtimeType);
-                                      print(singleProfileProvider.chequeStatus.toString().runtimeType);
-                                      print(singleProfileProvider.signStatus.toString().runtimeType);
-                                      print(singleProfileProvider.photoLiveStatus.toString().runtimeType);
-                                      print(singleProfileProvider.finalStatus.toString().runtimeType);
-
-                                      ResponseModel setFinalStatusResponseModel = await apiProvider.postRequest(
-                                        endpoint: "api/RM/CheckerApproved",
-                                        body: {
-                                            "formNo": encryptString(singleProfileProvider.formNo),
-                                            "panNo": encryptString(singleProfileProvider.clientData['PAN'].toString()),
-                                            "chequeStatus": encryptString(singleProfileProvider.chequeStatus ? "1" : "0"),
-                                            "signStatus": encryptString(singleProfileProvider.signStatus  ? "1" : "0"),
-                                            "photo_VideoStatus": encryptString(singleProfileProvider.photoLiveStatus  ? "1" : "0"),
-                                            "finalStatus": encryptString(singleProfileProvider.finalStatus.toString())
-                                        }
-                                      );                                           
-
-
-                                      callUCC(singleProfileProvider.clientData).then((value) async {
-
-                                        showDialog(
-                                          context: context, 
-                                          builder: (context) {
-                                            return AlertDialog(
-                                              content: Text("Approval Confirmed! MF UCC: $_ucc", style: TextStyle(fontFamily: 'SemiBold', color: Color(0xff461257)),),
-                                              actions: [
-                                                TextButton(
-                                                  onPressed: () {
-                                                    Navigator.pop(context);
-                                                  }, 
-                                                  child: Text("Ok", style: TextStyle(color: Color(0xff461257)),)
-                                                )
-                                              ],
-                                            );
-                                          }
-                                        );
-
-                                        // Calling the session id api here
-                                        callSessionId().then((value) async {
-                                          // Adding all the details of the client to BSE
-                                          callUpdatePrimaryInfo(singleProfileProvider.clientData);
-                                          callCheckCVL(singleProfileProvider.clientData);
-                                          callUpdateClientType(singleProfileProvider.clientData);
-                                          callUpdateAddress(singleProfileProvider.clientData);
-                                          callBankDetails(singleProfileProvider.clientData);
-                                          callUpdateFatcaDetails(singleProfileProvider.clientData);
-                                          callUpdateNomineeInfo(singleProfileProvider.clientData);
-                                          callSignDoc(singleProfileProvider.clientData);
-                                          callChequeDoc(singleProfileProvider.clientData);
-
-
-                                          // UPLOADING THE DATA TO BSE
-                                          // In this function, all the updated details is pushed to BSE
-                                          Future.delayed(Duration(seconds: 2), () {
-                                            uploadDataToBSE();
-                                          });
-
-                                        
-
-                                          // MAP MF UCC WITH JM UCC
-                                          ResponseModel mapUccResponse = await apiProvider.postRequest(
-                                            endpoint: 'api/BSEAPI/UpdateUCC',
+                            Container(
+                              child: _isClientApproved 
+                                ? SizedBox(
+                                      height: 40,
+                                      width: MediaQuery.of(context).size.width * 0.2,
+                                      child: MaterialButton(
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                                        color: Colors.green,
+                                        onPressed: () {
+                                          print("CLIENT DATA =====> " + Provider.of<SingleProfileProvider>(context, listen: false).clientData.toString());
+                                          // bseApiProvider.onboarding(context, _searchController.text, singleProfileProvider.clientData);
+                                        },
+                                        child: Center(child: Text("Approved", style: TextStyle(color: Colors.white, fontFamily: 'SemiBold'),)),
+                                      ),
+                                    )
+                                : Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SizedBox(
+                                      height: 40,
+                                      width: MediaQuery.of(context).size.width * 0.1,
+                                      child: MaterialButton(
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                                        color: Color(0xff461257),
+                                        onPressed: () {
+                                          print("CLIENT DATA =====> " + Provider.of<SingleProfileProvider>(context, listen: false).clientData.toString());
+                                          // bseApiProvider.onboarding(context, _searchController.text, singleProfileProvider.clientData);
+                                        },
+                                        child: Center(child: Text("Resend", style: TextStyle(color: Colors.white, fontFamily: 'SemiBold'),)),
+                                      ),
+                                    ),
+                                    SizedBox(width: 10,),
+                                    SizedBox(
+                                      height: 40,
+                                      width: MediaQuery.of(context).size.width * 0.1,
+                                      child: MaterialButton(
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                                        color: Color(0xff461257),
+                                        onPressed: () async {
+                                          singleProfileProvider.setFinalStatus(1);
+                              
+                                          print(singleProfileProvider.formNo.runtimeType);
+                                          print(singleProfileProvider.clientData['PAN'].toString().runtimeType);
+                                          print(singleProfileProvider.chequeStatus.toString().runtimeType);
+                                          print(singleProfileProvider.signStatus.toString().runtimeType);
+                                          print(singleProfileProvider.photoLiveStatus.toString().runtimeType);
+                                          print(singleProfileProvider.finalStatus.toString().runtimeType);
+                              
+                                          ResponseModel setFinalStatusResponseModel = await apiProvider.postRequest(
+                                            endpoint: "api/RM/CheckerApproved",
                                             body: {
-                                              "formNo": encryptString(_searchController.text),
-                                              "mf_UCC": encryptString(_ucc),
-                                              "ucc": encryptString(singleProfileProvider.clientData['JMUCC'])
+                                                "formNo": encryptString(singleProfileProvider.formNo),
+                                                "panNo": encryptString(singleProfileProvider.clientData['PAN'].toString()),
+                                                "chequeStatus": encryptString(singleProfileProvider.chequeStatus ? "1" : "0"),
+                                                "signStatus": encryptString(singleProfileProvider.signStatus  ? "1" : "0"),
+                                                "photo_VideoStatus": encryptString(singleProfileProvider.photoLiveStatus  ? "1" : "0"),
+                                                "finalStatus": encryptString(singleProfileProvider.finalStatus.toString())
                                             }
+                                          );                                           
+                              
+                              
+                                          callUCC(singleProfileProvider.clientData).then((value) async {
+                              
+                                            showDialog(
+                                              context: context, 
+                                              builder: (context) {
+                                                return AlertDialog(
+                                                  content: Text("Approval Confirmed! MF UCC: $_ucc", style: TextStyle(fontFamily: 'SemiBold', color: Color(0xff461257)),),
+                                                  actions: [
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                      }, 
+                                                      child: Text("Ok", style: TextStyle(color: Color(0xff461257)),)
+                                                    )
+                                                  ],
+                                                );
+                                              }
+                                            );
+                              
+                                            // Calling the session id api here
+                                            callSessionId().then((value) async {
+                                              // Adding all the details of the client to BSE
+                                              callUpdatePrimaryInfo(singleProfileProvider.clientData);
+                                              callCheckCVL(singleProfileProvider.clientData);
+                                              callUpdateClientType(singleProfileProvider.clientData);
+                                              callUpdateAddress(singleProfileProvider.clientData);
+                                              callBankDetails(singleProfileProvider.clientData);
+                                              callUpdateFatcaDetails(singleProfileProvider.clientData);
+                                              callUpdateNomineeInfo(singleProfileProvider.clientData);
+                                              callSignDoc(singleProfileProvider.clientData);
+                                              callChequeDoc(singleProfileProvider.clientData);
+                              
+                              
+                                              // UPLOADING THE DATA TO BSE
+                                              // In this function, all the updated details is pushed to BSE
+                                              Future.delayed(Duration(seconds: 2), () {
+                                                uploadDataToBSE();
+                                              });
+                              
                                             
-                                          );
-
-                                          print("UCC SAVE RESPONSE: " + mapUccResponse.toJson().toString());
-
-                                          return value;
-                                        });
-
-                                        return value;                                        
-                                      });                                                                                                                                                                                                                       
-
-                                    },
-                                    child: Center(child: Text("Approve", style: TextStyle(color: Colors.white, fontFamily: 'SemiBold'),)),
-                                  ),
+                              
+                                              // MAP MF UCC WITH JM UCC
+                                              ResponseModel mapUccResponse = await apiProvider.postRequest(
+                                                endpoint: 'api/BSEAPI/UpdateUCC',
+                                                body: {
+                                                  "formNo": encryptString(_searchController.text),
+                                                  "mf_UCC": encryptString(_ucc),
+                                                  "ucc": encryptString(singleProfileProvider.clientData['JMUCC'])
+                                                }
+                                                
+                                              );
+                              
+                                              print("UCC SAVE RESPONSE: " + mapUccResponse.toJson().toString());
+                              
+                                              return value;
+                                            });
+                              
+                                            return value;                                        
+                                          });                                                                                                                                                                                                                       
+                              
+                                        },
+                                        child: Center(child: Text("Approve", style: TextStyle(color: Colors.white, fontFamily: 'SemiBold'),)),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
                             )
                           ],
                         ),

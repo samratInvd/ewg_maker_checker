@@ -678,7 +678,7 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
                             PdfExpansionTile(title: "Esign PDF", pdfUrl: singleProfileProvider.clientData['Esign PDF']),
                             SizedBox(height: 20,),
                             Container(
-                              child: _isClientApproved 
+                              child: !_isClientApproved 
                                 ? SizedBox(
                                       height: 40,
                                       width: MediaQuery.of(context).size.width * 0.2,
@@ -759,16 +759,24 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
                               
                                             // Calling the session id api here
                                             callSessionId().then((value) async {
-                                              // Adding all the details of the client to BSE
-                                              callUpdatePrimaryInfo(singleProfileProvider.clientData);
-                                              callCheckCVL(singleProfileProvider.clientData);
+
                                               callUpdateClientType(singleProfileProvider.clientData);
-                                              callUpdateAddress(singleProfileProvider.clientData);
-                                              callBankDetails(singleProfileProvider.clientData);
-                                              callUpdateFatcaDetails(singleProfileProvider.clientData);
-                                              callUpdateNomineeInfo(singleProfileProvider.clientData);
-                                              callSignDoc(singleProfileProvider.clientData);
-                                              callChequeDoc(singleProfileProvider.clientData);
+
+                                              Future.delayed(Duration(seconds: 1), () {
+                                                callCheckCVL(singleProfileProvider.clientData);
+                                              });
+
+
+                                              Future.delayed(Duration(seconds: 2), () {
+                                                // Adding all the details of the client to BSE
+                                                callUpdatePrimaryInfo(singleProfileProvider.clientData);                                              
+                                                callUpdateAddress(singleProfileProvider.clientData);
+                                                callBankDetails(singleProfileProvider.clientData);
+                                                callUpdateFatcaDetails(singleProfileProvider.clientData);
+                                                callUpdateNomineeInfo(singleProfileProvider.clientData);
+                                                callSignDoc(singleProfileProvider.clientData);
+                                                callChequeDoc(singleProfileProvider.clientData);
+                                              });
                               
                               
                                               // UPLOADING THE DATA TO BSE

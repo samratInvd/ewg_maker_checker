@@ -678,7 +678,7 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
                             PdfExpansionTile(title: "Esign PDF", pdfUrl: singleProfileProvider.clientData['Esign PDF']),
                             SizedBox(height: 20,),
                             Container(
-                              child: !_isClientApproved 
+                              child: _isClientApproved 
                                 ? SizedBox(
                                       height: 40,
                                       width: MediaQuery.of(context).size.width * 0.2,

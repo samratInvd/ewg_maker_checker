@@ -11,6 +11,7 @@ import 'package:ewg_maker_checker/providers/bse_api_provider.dart';
 import 'package:ewg_maker_checker/providers/single_profile_provider.dart';
 import 'package:ewg_maker_checker/views/clients/widgets/pdf_expansion_tile.dart';
 import 'package:ewg_maker_checker/views/clients/widgets/photo_expansion_tile.dart';
+import 'package:ewg_maker_checker/views/clients/widgets/show_error_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:provider/provider.dart';
@@ -51,6 +52,8 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
     setState(() {
       _ucc = data['UCC'];
     });
+
+    return data;
   }
 
 
@@ -69,6 +72,7 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
     });
     print("SESSION: " + jsonDecode(getSessionIdResponse.body).toString());
     print("SESSIONID: " + _sessionId);
+    return data;
   }      
 
 
@@ -86,7 +90,7 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
     );
     var data = jsonDecode(updatePrimaryInfoResponse.body);
     
-
+    return data;
     
   }   
 
@@ -103,7 +107,7 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
     );
     var data = jsonDecode(getClientTypeResponse.body);
     
-
+    return data;
     
   }   
   
@@ -127,7 +131,7 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
     );
     var data = jsonDecode(getCvlResponse.body);
     
-
+    return data;
     
   }
 
@@ -144,7 +148,7 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
     );
     var data = jsonDecode(getNomineeInfo.body);
     
-
+    return data;
     
   }      
 
@@ -161,7 +165,7 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
     );
     var data = jsonDecode(getAddressResponse.body);
     
-
+    return data;
     
   }   
 
@@ -197,7 +201,7 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
     );
     var data = jsonDecode(getFatcaDetailsResponse.body);
     
-
+    return data;
     
   }
 
@@ -215,7 +219,7 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
     );
     var data = jsonDecode(getClientDoc.body);
     
-
+    return data;
     
   }
 
@@ -233,7 +237,7 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
     );
     var data = jsonDecode(getClientDocCheque.body);
     
-
+    return data;
     
   }  
 
@@ -760,89 +764,145 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
 
                                           setState(() {
                                             _isLoading = true;
-                                          });                                                                                                                               
+                                          });
                               
                               
                                           callUCC(singleProfileProvider.clientData).then((value) async {
                                             // Calling the session id api here
                                             callSessionId().then((value) async {
 
-                                              callUpdateClientType(singleProfileProvider.clientData).then((value) {
-                                                callCheckCVL(singleProfileProvider.clientData).then((value) {
-                                                  callUpdatePrimaryInfo(singleProfileProvider.clientData).then((value) {
-                                                    callUpdateAddress(singleProfileProvider.clientData).then((value) {
-                                                      callBankDetails(singleProfileProvider.clientData).then((value) {
-                                                        callUpdateFatcaDetails(singleProfileProvider.clientData).then((value) {
-                                                          callUpdateFatcaDetails(singleProfileProvider.clientData).then((value) {
-                                                            callUpdateNomineeInfo(singleProfileProvider.clientData).then((value) {
-                                                              callSignDoc(singleProfileProvider.clientData).then((value) {
-                                                                callChequeDoc(singleProfileProvider.clientData).then((value) {
-                                                                  uploadDataToBSE().then((value) async {
+                                              if(value['StatusCode'] == 101) {
+                                                showErrorDialog(context, "Session ID Error");
+                                              } else if(value['StatusCode'] == 100) {
 
-                                                                    setState(() {
-                                                                      _isLoading = false;
-                                                                    });
+                                                // Update Client Type
+                                                callUpdateClientType(singleProfileProvider.clientData).then((value) {
+                                                  if(value['StatusCode'] == 101) {
+                                                    showErrorDialog(context, "Updating Client Type Error");
+                                                  } else if(value['StatusCode'] == 100) {
+                                                    
+                                                    // Checking Client CVL
+                                                    callCheckCVL(singleProfileProvider.clientData).then((value) {
+                                                      if(value['StatusCode'] == 101) {
+                                                        showErrorDialog(context, "CVL Error");
+                                                      } else if(value['StatusCode'] == 100) {
+                                                        
+                                                        // Updating Primary Info
+                                                        callUpdatePrimaryInfo(singleProfileProvider.clientData).then((value) {
+                                                          if(value['StatusCode'] == 101) {
+                                                            showErrorDialog(context, "Updating Primary Info Error");
+                                                          } else if(value['StatusCode'] == 100) {
 
-                                                                    if(value['StatusCode'] == 100) {
-                                                                      showDialog(
-                                                                        context: context, 
-                                                                        builder: (context) {
-                                                                          return AlertDialog(
-                                                                            content: Text("Approval Confirmed! MF UCC: $_ucc", style: TextStyle(fontFamily: 'SemiBold', color: Color(0xff461257)),),
-                                                                            actions: [
-                                                                              TextButton(
-                                                                                onPressed: () {
-                                                                                  Navigator.pop(context);
-                                                                                }, 
-                                                                                child: Text("Ok", style: TextStyle(color: Color(0xff461257)),)
-                                                                              )
-                                                                            ],
-                                                                          );
-                                                                        }
-                                                                      );
+                                                            // Updating Address
+                                                            callUpdateAddress(singleProfileProvider.clientData).then((value) {
+                                                              if(value['StatusCode'] == 101) {
+                                                                showErrorDialog(context, "Updating Address Error");
+                                                              } else if(value['StatusCode'] == 100) {
 
-                                                                      // MAP MF UCC WITH JM UCC
-                                                                      ResponseModel mapUccResponse = await apiProvider.postRequest(
-                                                                        endpoint: 'api/BSEAPI/UpdateUCC',
-                                                                        body: {
-                                                                          "formNo": encryptString(_searchController.text),
-                                                                          "mf_UCC": encryptString(_ucc),
-                                                                          "ucc": encryptString(singleProfileProvider.clientData['JMUCC'])
-                                                                        }
+                                                                // Calling Bank Details
+                                                                callBankDetails(singleProfileProvider.clientData).then((value) {
+                                                                  // if(value['StatusCode'] == 101) {
+                                                                  //   showErrorDialog(context, "Bank Details Error");
+                                                                  // } else if(value['StatusCode'] == 100) {
+
+                                                                    
+                                                                  // }
+                                                                  // Updating Fatca Details
+                                                                    callUpdateFatcaDetails(singleProfileProvider.clientData).then((value) {
+                                                                      if(value['StatusCode'] == 101) {
+                                                                        showErrorDialog(context, "Fatca Details Error");                                  
+                                                                      } else if(value['StatusCode'] == 100) {
+
+                                                                        // Updating Nominee
+                                                                        callUpdateNomineeInfo(singleProfileProvider.clientData).then((value) {
+                                                                          if(value['StatusCode'] == 101) {
+                                                                            showErrorDialog(context, "Nominee Info Error");
+                                                                          } else if(value['StatusCode'] == 100) {
+
+                                                                            // Uploading Signature
+                                                                            callSignDoc(singleProfileProvider.clientData).then((value) {
+                                                                              if(value['StatusCode'] == 101) {
+                                                                                showErrorDialog(context, "Signature Error");
+                                                                              } else if(value['StatusCode'] == 100) {
+                                                                                // Uploading Cheque
+                                                                                callChequeDoc(singleProfileProvider.clientData).then((value) {
+                                                                                  if(value['StatusCode'] == 101) {
+                                                                                    showErrorDialog(context, "Cheque Error");
+                                                                                  } else if(value['StatusCode'] == 100) {
+                                                                                    uploadDataToBSE().then((value) async {
+
+                                                                                      setState(() {
+                                                                                        _isLoading = false;
+                                                                                      });
+
+                                                                                      if(value['StatusCode'] == 100) {
+                                                                                        showDialog(
+                                                                                          context: context, 
+                                                                                          builder: (context) {
+                                                                                            return AlertDialog(
+                                                                                              content: Text("Approval Confirmed! MF UCC: $_ucc", style: TextStyle(fontFamily: 'SemiBold', color: Color(0xff461257)),),
+                                                                                              actions: [
+                                                                                                TextButton(
+                                                                                                  onPressed: () {
+                                                                                                    Navigator.pop(context);
+                                                                                                  }, 
+                                                                                                  child: Text("Ok", style: TextStyle(color: Color(0xff461257)),)
+                                                                                                )
+                                                                                              ],
+                                                                                            );
+                                                                                          }
+                                                                                        );
+
+                                                                                        // MAP MF UCC WITH JM UCC
+                                                                                        ResponseModel mapUccResponse = await apiProvider.postRequest(
+                                                                                          endpoint: 'api/BSEAPI/UpdateUCC',
+                                                                                          body: {
+                                                                                            "formNo": encryptString(_searchController.text),
+                                                                                            "mf_UCC": encryptString(_ucc),
+                                                                                            "ucc": encryptString(singleProfileProvider.clientData['JMUCC'])
+                                                                                          }
+                                                                                          
+                                                                                        );
                                                                         
-                                                                      );
-                                                      
-                                                                      print("UCC SAVE RESPONSE: " + mapUccResponse.toJson().toString());
-                                                                    } else {
-                                                                      showDialog(
-                                                                        context: context, 
-                                                                        builder: (context) {
-                                                                          return AlertDialog(
-                                                                            content: Text("Error in Sending data to BSE", style: TextStyle(fontFamily: 'SemiBold', color: Color(0xff461257)),),
-                                                                            actions: [
-                                                                              TextButton(
-                                                                                onPressed: () {
-                                                                                  Navigator.pop(context);
-                                                                                }, 
-                                                                                child: Text("Ok", style: TextStyle(color: Color(0xff461257)),)
-                                                                              )
-                                                                            ],
-                                                                          );
-                                                                        }
-                                                                      );
-                                                                    }                                                                  
-                                                                  });
+                                                                                        print("UCC SAVE RESPONSE: " + mapUccResponse.toJson().toString());
+                                                                                      } else {
+                                                                                        showDialog(
+                                                                                          context: context, 
+                                                                                          builder: (context) {
+                                                                                            return AlertDialog(
+                                                                                              content: Text("Error in Sending data to BSE", style: TextStyle(fontFamily: 'SemiBold', color: Color(0xff461257)),),
+                                                                                              actions: [
+                                                                                                TextButton(
+                                                                                                  onPressed: () {
+                                                                                                    Navigator.pop(context);
+                                                                                                  }, 
+                                                                                                  child: Text("Ok", style: TextStyle(color: Color(0xff461257)),)
+                                                                                                )
+                                                                                              ],
+                                                                                            );
+                                                                                          }
+                                                                                        );
+                                                                                      }                                                                  
+                                                                                    });
+                                                                                  }
+                                                                                });
+                                                                              }
+                                                                            });
+                                                                          }
+                                                                        });
+                                                                      }
+                                                                    });
                                                                 });
-                                                              });
+                                                              }
                                                             });
-                                                          });
+                                                          }                   
                                                         });
-                                                      });
+                                                      }
                                                     });
-                                                  });
+                                                  }
                                                 });
-                                              });
-                                            });                                          
+                                              } 
+                                            });                                                                                 
                                             
                                             return value;                                        
                                           });                                                                                                                                                                                                                       

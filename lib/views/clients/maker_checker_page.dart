@@ -27,8 +27,9 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
   TextEditingController _searchController = TextEditingController();
   int tabIndex = 0;
   List<Map<String, dynamic>> clientDetails = [];
-  String _ucc = "";
+  String _ucc = "1009";
   String _sessionId = "";
+  bool _isLoading = false;
 
   bool _isClientApproved = false;
 
@@ -84,7 +85,9 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
         }      
     );
     var data = jsonDecode(updatePrimaryInfoResponse.body);
-    print("Primary Info: " + data);
+    
+
+    
   }   
 
   callUpdateClientType(Map<String, dynamic> clientData) async {
@@ -99,7 +102,9 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
         }      
     );
     var data = jsonDecode(getClientTypeResponse.body);
-    print("Client Type: " + data);
+    
+
+    
   }   
   
 
@@ -121,7 +126,9 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
         }      
     );
     var data = jsonDecode(getCvlResponse.body);
-    print("Cvl Data: " + data);
+    
+
+    
   }
 
   callUpdateNomineeInfo(Map<String, dynamic> clientData) async {
@@ -136,7 +143,9 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
         }      
     );
     var data = jsonDecode(getNomineeInfo.body);
-    print("Nominee Info: " + data); 
+    
+
+    
   }      
 
   callUpdateAddress(Map<String, dynamic> clientData) async {
@@ -151,7 +160,9 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
         }      
     );
     var data = jsonDecode(getAddressResponse.body);
-    print("Personal Address: " + data);
+    
+
+    
   }   
 
 
@@ -167,7 +178,9 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
         }      
     );
     var data = jsonDecode(getBankDetailsResponse.body);
-    print("Bank Details: " + data);
+    
+
+    
   }    
 
 
@@ -183,7 +196,9 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
         }      
     );
     var data = jsonDecode(getFatcaDetailsResponse.body);
-    print("FATCA Details: " + data);
+    
+
+    
   }
 
 
@@ -199,7 +214,9 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
         }      
     );
     var data = jsonDecode(getClientDoc.body);
-    print("Client Doc Sign Details: " + data);
+    
+
+    
   }
 
 
@@ -215,15 +232,17 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
         }      
     );
     var data = jsonDecode(getClientDocCheque.body);
-    print("Client Doc Cheque Details: " + data);
+    
+
+    
   }  
 
 
 
 
   uploadDataToBSE() async {
-    // CHEQUE
-    Response getClientDocCheque = await post(
+    // UPLOAD DATA TO BSE
+    Response getUploadDatatoBSEResponse = await post(
       Uri.parse("https://jmbseapi.invd.in/api/ClientOnboard/UploadDataToBSE"),
       body:
         {
@@ -232,8 +251,9 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
           )
         }      
     );
-    var data = jsonDecode(getClientDocCheque.body);
-    print("Client Doc Cheque Details: " + data);
+    var data = jsonDecode(getUploadDatatoBSEResponse.body);
+    return data;
+    
   }    
 
 
@@ -735,79 +755,108 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
                                                 "photo_VideoStatus": encryptString(singleProfileProvider.photoLiveStatus  ? "1" : "0"),
                                                 "finalStatus": encryptString(singleProfileProvider.finalStatus.toString())
                                             }
-                                          );                                           
+                                          );    
+
+
+                                          setState(() {
+                                            _isLoading = true;
+                                          });                                                                                                                               
                               
                               
                                           callUCC(singleProfileProvider.clientData).then((value) async {
-                              
-                                            showDialog(
-                                              context: context, 
-                                              builder: (context) {
-                                                return AlertDialog(
-                                                  content: Text("Approval Confirmed! MF UCC: $_ucc", style: TextStyle(fontFamily: 'SemiBold', color: Color(0xff461257)),),
-                                                  actions: [
-                                                    TextButton(
-                                                      onPressed: () {
-                                                        Navigator.pop(context);
-                                                      }, 
-                                                      child: Text("Ok", style: TextStyle(color: Color(0xff461257)),)
-                                                    )
-                                                  ],
-                                                );
-                                              }
-                                            );
-                              
                                             // Calling the session id api here
                                             callSessionId().then((value) async {
 
-                                              callUpdateClientType(singleProfileProvider.clientData);
+                                              callUpdateClientType(singleProfileProvider.clientData).then((value) {
+                                                callCheckCVL(singleProfileProvider.clientData).then((value) {
+                                                  callUpdatePrimaryInfo(singleProfileProvider.clientData).then((value) {
+                                                    callUpdateAddress(singleProfileProvider.clientData).then((value) {
+                                                      callBankDetails(singleProfileProvider.clientData).then((value) {
+                                                        callUpdateFatcaDetails(singleProfileProvider.clientData).then((value) {
+                                                          callUpdateFatcaDetails(singleProfileProvider.clientData).then((value) {
+                                                            callUpdateNomineeInfo(singleProfileProvider.clientData).then((value) {
+                                                              callSignDoc(singleProfileProvider.clientData).then((value) {
+                                                                callChequeDoc(singleProfileProvider.clientData).then((value) {
+                                                                  uploadDataToBSE().then((value) async {
 
-                                              Future.delayed(Duration(seconds: 1), () {
-                                                callCheckCVL(singleProfileProvider.clientData);
-                                              });
+                                                                    setState(() {
+                                                                      _isLoading = false;
+                                                                    });
 
+                                                                    if(value['StatusCode'] == 100) {
+                                                                      showDialog(
+                                                                        context: context, 
+                                                                        builder: (context) {
+                                                                          return AlertDialog(
+                                                                            content: Text("Approval Confirmed! MF UCC: $_ucc", style: TextStyle(fontFamily: 'SemiBold', color: Color(0xff461257)),),
+                                                                            actions: [
+                                                                              TextButton(
+                                                                                onPressed: () {
+                                                                                  Navigator.pop(context);
+                                                                                }, 
+                                                                                child: Text("Ok", style: TextStyle(color: Color(0xff461257)),)
+                                                                              )
+                                                                            ],
+                                                                          );
+                                                                        }
+                                                                      );
 
-                                              Future.delayed(Duration(seconds: 2), () {
-                                                // Adding all the details of the client to BSE
-                                                callUpdatePrimaryInfo(singleProfileProvider.clientData);                                              
-                                                callUpdateAddress(singleProfileProvider.clientData);
-                                                callBankDetails(singleProfileProvider.clientData);
-                                                callUpdateFatcaDetails(singleProfileProvider.clientData);
-                                                callUpdateNomineeInfo(singleProfileProvider.clientData);
-                                                callSignDoc(singleProfileProvider.clientData);
-                                                callChequeDoc(singleProfileProvider.clientData);
+                                                                      // MAP MF UCC WITH JM UCC
+                                                                      ResponseModel mapUccResponse = await apiProvider.postRequest(
+                                                                        endpoint: 'api/BSEAPI/UpdateUCC',
+                                                                        body: {
+                                                                          "formNo": encryptString(_searchController.text),
+                                                                          "mf_UCC": encryptString(_ucc),
+                                                                          "ucc": encryptString(singleProfileProvider.clientData['JMUCC'])
+                                                                        }
+                                                                        
+                                                                      );
+                                                      
+                                                                      print("UCC SAVE RESPONSE: " + mapUccResponse.toJson().toString());
+                                                                    } else {
+                                                                      showDialog(
+                                                                        context: context, 
+                                                                        builder: (context) {
+                                                                          return AlertDialog(
+                                                                            content: Text("Error in Sending data to BSE", style: TextStyle(fontFamily: 'SemiBold', color: Color(0xff461257)),),
+                                                                            actions: [
+                                                                              TextButton(
+                                                                                onPressed: () {
+                                                                                  Navigator.pop(context);
+                                                                                }, 
+                                                                                child: Text("Ok", style: TextStyle(color: Color(0xff461257)),)
+                                                                              )
+                                                                            ],
+                                                                          );
+                                                                        }
+                                                                      );
+                                                                    }                                                                  
+                                                                  });
+                                                                });
+                                                              });
+                                                            });
+                                                          });
+                                                        });
+                                                      });
+                                                    });
+                                                  });
+                                                });
                                               });
-                              
-                              
-                                              // UPLOADING THE DATA TO BSE
-                                              // In this function, all the updated details is pushed to BSE
-                                              Future.delayed(Duration(seconds: 2), () {
-                                                uploadDataToBSE();
-                                              });
-                              
+                                            });                                          
                                             
-                              
-                                              // MAP MF UCC WITH JM UCC
-                                              ResponseModel mapUccResponse = await apiProvider.postRequest(
-                                                endpoint: 'api/BSEAPI/UpdateUCC',
-                                                body: {
-                                                  "formNo": encryptString(_searchController.text),
-                                                  "mf_UCC": encryptString(_ucc),
-                                                  "ucc": encryptString(singleProfileProvider.clientData['JMUCC'])
-                                                }
-                                                
-                                              );
-                              
-                                              print("UCC SAVE RESPONSE: " + mapUccResponse.toJson().toString());
-                              
-                                              return value;
-                                            });
-                              
                                             return value;                                        
                                           });                                                                                                                                                                                                                       
                               
                                         },
-                                        child: Center(child: Text("Approve", style: TextStyle(color: Colors.white, fontFamily: 'SemiBold'),)),
+                                        child: Center(
+                                          child: !_isLoading
+                                              ? Text("Approve", style: TextStyle(color: Colors.white, fontFamily: 'SemiBold'),)
+                                              : Container(
+                                                  height: 20,
+                                                  width: 20,
+                                                  child: CircularProgressIndicator(color: Colors.white,)
+                                                )
+                                        ),
                                       ),
                                     ),
                                   ],

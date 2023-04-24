@@ -28,7 +28,7 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
   TextEditingController _searchController = TextEditingController();
   int tabIndex = 0;
   List<Map<String, dynamic>> clientDetails = [];
-  String _ucc = "1009";
+  String _ucc = "";
   String _sessionId = "";
   bool _isLoading = false;
 
@@ -183,7 +183,7 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
     );
     var data = jsonDecode(getBankDetailsResponse.body);
     
-
+    return data;
     
   }    
 
@@ -764,10 +764,11 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
 
                                           setState(() {
                                             _isLoading = true;
-                                          });
+                                          });                                              
                               
                               
                                           callUCC(singleProfileProvider.clientData).then((value) async {
+                                                                                                                         
                                             // Calling the session id api here
                                             callSessionId().then((value) async {
 
@@ -801,13 +802,11 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
 
                                                                 // Calling Bank Details
                                                                 callBankDetails(singleProfileProvider.clientData).then((value) {
-                                                                  // if(value['StatusCode'] == 101) {
-                                                                  //   showErrorDialog(context, "Bank Details Error");
-                                                                  // } else if(value['StatusCode'] == 100) {
+                                                                  if(value['StatusCode'] == 101) {
+                                                                    showErrorDialog(context, "Bank Details Error");
+                                                                  } else {
 
-                                                                    
-                                                                  // }
-                                                                  // Updating Fatca Details
+                                                                    // Updating Fatca Details
                                                                     callUpdateFatcaDetails(singleProfileProvider.clientData).then((value) {
                                                                       if(value['StatusCode'] == 101) {
                                                                         showErrorDialog(context, "Fatca Details Error");                                  
@@ -892,6 +891,7 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
                                                                         });
                                                                       }
                                                                     });
+                                                                  }
                                                                 });
                                                               }
                                                             });
@@ -902,8 +902,7 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
                                                   }
                                                 });
                                               } 
-                                            });                                                                                 
-                                            
+                                            });
                                             return value;                                        
                                           });                                                                                                                                                                                                                       
                               

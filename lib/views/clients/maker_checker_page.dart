@@ -739,28 +739,7 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
                                       child: MaterialButton(
                                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                                         color: Color(0xff461257),
-                                        onPressed: () async {
-                                          singleProfileProvider.setFinalStatus(1);
-                              
-                                          print(singleProfileProvider.formNo.runtimeType);
-                                          print(singleProfileProvider.clientData['PAN'].toString().runtimeType);
-                                          print(singleProfileProvider.chequeStatus.toString().runtimeType);
-                                          print(singleProfileProvider.signStatus.toString().runtimeType);
-                                          print(singleProfileProvider.photoLiveStatus.toString().runtimeType);
-                                          print(singleProfileProvider.finalStatus.toString().runtimeType);
-                              
-                                          ResponseModel setFinalStatusResponseModel = await apiProvider.postRequest(
-                                            endpoint: "api/RM/CheckerApproved",
-                                            body: {
-                                                "formNo": encryptString(singleProfileProvider.formNo),
-                                                "panNo": encryptString(singleProfileProvider.clientData['PAN'].toString()),
-                                                "chequeStatus": encryptString(singleProfileProvider.chequeStatus ? "1" : "0"),
-                                                "signStatus": encryptString(singleProfileProvider.signStatus  ? "1" : "0"),
-                                                "photo_VideoStatus": encryptString(singleProfileProvider.photoLiveStatus  ? "1" : "0"),
-                                                "finalStatus": encryptString(singleProfileProvider.finalStatus.toString())
-                                            }
-                                          );    
-
+                                        onPressed: () async {                                          
 
                                           setState(() {
                                             _isLoading = true;
@@ -770,74 +749,96 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
                                           callUCC(singleProfileProvider.clientData).then((value) async {
 
                                             if(value['StatusCode'] == 101) {
-                                              showErrorDialog(context, "${value['ErrorDescription']}");
+                                              showErrorDialog(context, "${value['ErrorDescription']}\nAPI: api/ClientSignUp/SignUp");
                                             } else {
                                               // Calling the session id api here
                                               callSessionId().then((value) async {
 
                                                 if(value['StatusCode'] == 101) {
-                                                  showErrorDialog(context, "Session ID Error");
+                                                  showErrorDialog(context, "Session ID Error\nAPI: api/Common/GenerateClientSession");
                                                 } else if(value['StatusCode'] == 100) {
 
                                                   // Update Client Type
                                                   callUpdateClientType(singleProfileProvider.clientData).then((value) {
                                                     if(value['StatusCode'] == 101) {
-                                                      showErrorDialog(context, "Updating Client Type Error");
+                                                      showErrorDialog(context, "Updating Client Type Error\nAPI: api/ClientOnboard/UpdateClientType");
                                                     } else if(value['StatusCode'] == 100) {
                                                       
                                                       // Checking Client CVL
                                                       callCheckCVL(singleProfileProvider.clientData).then((value) {
                                                         if(value['StatusCode'] == 101) {
-                                                          showErrorDialog(context, "CVL Error");
+                                                          showErrorDialog(context, "CVL Error\nAPI: api/ClientOnboard/CheckCVLPrimary");
                                                         } else if(value['StatusCode'] == 100) {
                                                           
                                                           // Updating Primary Info
                                                           callUpdatePrimaryInfo(singleProfileProvider.clientData).then((value) {
                                                             if(value['StatusCode'] == 101) {
-                                                              showErrorDialog(context, "Updating Primary Info Error");
+                                                              showErrorDialog(context, "Updating Primary Info Error\nAPI: api/ClientOnboard/UpdatePersonalInfoPrimary");
                                                             } else if(value['StatusCode'] == 100) {
 
                                                               // Updating Address
                                                               callUpdateAddress(singleProfileProvider.clientData).then((value) {
                                                                 if(value['StatusCode'] == 101) {
-                                                                  showErrorDialog(context, "Updating Address Error");
+                                                                  showErrorDialog(context, "Updating Address Error\nAPI: api/ClientOnboard/UpdatePrimaryAddress");
                                                                 } else if(value['StatusCode'] == 100) {
 
                                                                   // Calling Bank Details
                                                                   callBankDetails(singleProfileProvider.clientData).then((value) {
                                                                     if(value['StatusCode'] == 101) {
-                                                                      showErrorDialog(context, "Bank Details Error");
+                                                                      showErrorDialog(context, "Bank Details Error\nAPI: api/ClientOnboard/UpdatePrimaryAddress");
                                                                     } else {
 
                                                                       // Updating Fatca Details
                                                                       callUpdateFatcaDetails(singleProfileProvider.clientData).then((value) {
                                                                         if(value['StatusCode'] == 101) {
-                                                                          showErrorDialog(context, "Fatca Details Error");                                  
+                                                                          showErrorDialog(context, "Fatca Details Error\nAPI: api/ClientOnboard/UpdateFatcaDetails");                                  
                                                                         } else if(value['StatusCode'] == 100) {
 
                                                                           // Updating Nominee
                                                                           callUpdateNomineeInfo(singleProfileProvider.clientData).then((value) {
                                                                             if(value['StatusCode'] == 101) {
-                                                                              showErrorDialog(context, "Nominee Info Error");
+                                                                              showErrorDialog(context, "Nominee Info Error\nAPI: api/ClientOnboard/UpdateNomineeInfo");
                                                                             } else if(value['StatusCode'] == 100) {
 
                                                                               // Uploading Signature
                                                                               callSignDoc(singleProfileProvider.clientData).then((value) {
                                                                                 if(value['StatusCode'] == 101) {
-                                                                                  showErrorDialog(context, "Signature Error");
+                                                                                  showErrorDialog(context, "Signature Error\nAPI: api/ClientOnboard/UpdateClientDocs");
                                                                                 } else if(value['StatusCode'] == 100) {
                                                                                   // Uploading Cheque
                                                                                   callChequeDoc(singleProfileProvider.clientData).then((value) {
                                                                                     if(value['StatusCode'] == 101) {
-                                                                                      showErrorDialog(context, "Cheque Error");
+                                                                                      showErrorDialog(context, "Cheque Error\nAPI: api/ClientOnboard/UpdateClientDocs");
                                                                                     } else if(value['StatusCode'] == 100) {
-                                                                                      uploadDataToBSE().then((value) async {
+                                                                                      uploadDataToBSE().then((value) async {                                                                                          
 
                                                                                         setState(() {
                                                                                           _isLoading = false;
                                                                                         });
 
                                                                                         if(value['StatusCode'] == 100) {
+
+                                                                                          singleProfileProvider.setFinalStatus(1);
+                              
+                                                                                          print(singleProfileProvider.formNo.runtimeType);
+                                                                                          print(singleProfileProvider.clientData['PAN'].toString().runtimeType);
+                                                                                          print(singleProfileProvider.chequeStatus.toString().runtimeType);
+                                                                                          print(singleProfileProvider.signStatus.toString().runtimeType);
+                                                                                          print(singleProfileProvider.photoLiveStatus.toString().runtimeType);
+                                                                                          print(singleProfileProvider.finalStatus.toString().runtimeType);
+                                                                              
+                                                                                          ResponseModel setFinalStatusResponseModel = await apiProvider.postRequest(
+                                                                                            endpoint: "api/RM/CheckerApproved",
+                                                                                            body: {
+                                                                                                "formNo": encryptString(singleProfileProvider.formNo),
+                                                                                                "panNo": encryptString(singleProfileProvider.clientData['PAN'].toString()),
+                                                                                                "chequeStatus": encryptString(singleProfileProvider.chequeStatus ? "1" : "0"),
+                                                                                                "signStatus": encryptString(singleProfileProvider.signStatus  ? "1" : "0"),
+                                                                                                "photo_VideoStatus": encryptString(singleProfileProvider.photoLiveStatus  ? "1" : "0"),
+                                                                                                "finalStatus": encryptString(singleProfileProvider.finalStatus.toString())
+                                                                                            }
+                                                                                          ); 
+
                                                                                           showDialog(
                                                                                             context: context, 
                                                                                             builder: (context) {
@@ -907,6 +908,7 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
                                                 } 
                                               }); 
                                             }                                            
+
                                             return value;                                        
                                           });                                                                                                                                                                                                                       
                               

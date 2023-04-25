@@ -356,6 +356,7 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
                                     singleProfileProvider.setClientData(response.data!['clientDetailsForCheckerMaker'][0]);
                                     singleProfileProvider.separateDetailsInClientData(response.data!['clientDetailsForCheckerMaker'][0]);                                    
                                     print("CLIENT DATA SEPARATED: " + singleProfileProvider.clientDataSeparated.toString());
+                                    singleProfileProvider.setFormNo(_searchController.text);
 
 
                                     // CHECKING IF THE CLIENT IS APPROVED OR NOT

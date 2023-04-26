@@ -34,6 +34,13 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
 
   bool _isClientApproved = false;
 
+  Map<String, String> relationships = {
+    "Dependent Child": "DC",
+    "Dependent Parents": "DP",
+    "Spouse": "SP",
+    "Siblings": "DS"
+  };
+
 
   //------------ BSE APIS ------------//
 
@@ -142,7 +149,7 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
       body:
         {
           "ParamValue": encryptStringBSE(
-            "$_ucc|$_sessionId|${clientData['Nominee Name']}|DC"
+            "$_ucc|$_sessionId|${clientData['Nominee Name']}|${relationships[clientData['Nominee Relationship']]}"
           )
         }      
     );
@@ -302,31 +309,52 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
                               body: {
                                 "FormNo": encryptString(_searchController.text)
                               }
-                            ).then((response) {   
-                              log(response.toJson().toString()); 
+                            ).then((response) async {  
 
-                              // CLEARING THE DATA
-                              singleProfileProvider.clearData();                                
-
-                              // Populating the new data
-                              singleProfileProvider.setClientData(response.data!['clientDetailsForCheckerMaker'][0]);
-                              singleProfileProvider.separateDetailsInClientData(response.data!['clientDetailsForCheckerMaker'][0]);
-                              print("CLIENT DATA SEPARATED: " + singleProfileProvider.clientDataSeparated.toString());
-                              print(singleProfileProvider.clientData);
-                              singleProfileProvider.setFormNo(value);
-                              
-                              // CHECKING IF THE CLIENT IS APPROVED OR NOT
-                              if(singleProfileProvider.clientData['Final_Status'] == 1) {
-                                setState(() {
-                                  _isClientApproved = true;
-                                });
+                              if(response.statusCode != "0") {
+                                showDialog(
+                                  context: context, 
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      content: Text("${response.message!.toUpperCase()}", style: TextStyle(fontFamily: 'SemiBold', color: Color(0xff461257)),),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          }, 
+                                          child: Text("Ok", style: TextStyle(color: Color(0xff461257)),)
+                                        )
+                                      ],
+                                    );
+                                  }
+                                );
                               } else {
-                                setState(() {
-                                  _isClientApproved = false;
-                                });
+                                log(response.toJson().toString()); 
+
+                                // CLEARING THE DATA
+                                singleProfileProvider.clearData();                                
+
+                                // Populating the new data
+                                singleProfileProvider.setClientData(response.data!['clientDetailsForCheckerMaker'][0]);
+                                singleProfileProvider.separateDetailsInClientData(response.data!['clientDetailsForCheckerMaker'][0]);
+                                print("CLIENT DATA SEPARATED: " + singleProfileProvider.clientDataSeparated.toString());
+                                print(singleProfileProvider.clientData);
+                                singleProfileProvider.setFormNo(value);
+                                
+                                // CHECKING IF THE CLIENT IS APPROVED OR NOT
+                                if(singleProfileProvider.clientData['Final_Status'] == 1) {
+                                  setState(() {
+                                    _isClientApproved = true;
+                                  });
+                                } else {
+                                  setState(() {
+                                    _isClientApproved = false;
+                                  });
+                                }                                                               
                               }
 
                               return response;
+                              
                             });      
 
                           });
@@ -728,6 +756,22 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
                                         color: Color(0xff461257),
                                         onPressed: () {
                                           print("CLIENT DATA =====> " + Provider.of<SingleProfileProvider>(context, listen: false).clientData.toString());
+                                          showDialog(
+                                            context: context, 
+                                            builder: (context) {
+                                              return AlertDialog(
+                                                content: Text("Client is notified to do onboarding again", style: TextStyle(fontFamily: 'SemiBold', color: Color(0xff461257)),),
+                                                actions: [
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    }, 
+                                                    child: Text("Ok", style: TextStyle(color: Color(0xff461257)),)
+                                                  )
+                                                ],
+                                              );
+                                            }
+                                          );
                                           // bseApiProvider.onboarding(context, _searchController.text, singleProfileProvider.clientData);
                                         },
                                         child: Center(child: Text("Resend", style: TextStyle(color: Colors.white, fontFamily: 'SemiBold'),)),

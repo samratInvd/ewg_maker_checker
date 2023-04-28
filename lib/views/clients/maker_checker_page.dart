@@ -754,13 +754,36 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
                                       child: MaterialButton(
                                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                                         color: Color(0xff461257),
-                                        onPressed: () {
+                                        onPressed: () async {
                                           print("CLIENT DATA =====> " + Provider.of<SingleProfileProvider>(context, listen: false).clientData.toString());
+
+                                          singleProfileProvider.setFinalStatus(0);
+                              
+                                          print(singleProfileProvider.formNo);
+                                          print(singleProfileProvider.clientData['PAN'].toString());
+                                          print(singleProfileProvider.chequeStatus.toString());
+                                          print(singleProfileProvider.signStatus.toString());
+                                          print(singleProfileProvider.photoLiveStatus.toString());
+                                          print(singleProfileProvider.finalStatus.toString());
+                              
+                                          ResponseModel setFinalStatusResponseModel = await apiProvider.postRequest(
+                                            endpoint: "api/RM/CheckerApproved",
+                                            body: {
+                                                "formNo": encryptString(singleProfileProvider.formNo),
+                                                "panNo": encryptString(singleProfileProvider.clientData['PAN'].toString()),
+                                                "chequeStatus": encryptString(singleProfileProvider.chequeStatus ? "1" : "0"),
+                                                "signStatus": encryptString(singleProfileProvider.signStatus  ? "1" : "0"),
+                                                "photo_VideoStatus": encryptString(singleProfileProvider.photoLiveStatus  ? "1" : "0"),
+                                                "finalStatus": encryptString(singleProfileProvider.finalStatus.toString())
+                                            }
+                                          );
+                                          print("SET FINAL STATUS DATA RESPONSE ====> " + setFinalStatusResponseModel.toJson().toString());
+
                                           showDialog(
                                             context: context, 
                                             builder: (context) {
                                               return AlertDialog(
-                                                content: Text("Client is notified to do onboarding again", style: TextStyle(fontFamily: 'SemiBold', color: Color(0xff461257)),),
+                                                content: Text("Client should be notified to do onboarding again and is not approved", style: TextStyle(fontFamily: 'SemiBold', color: Color(0xff461257)),),
                                                 actions: [
                                                   TextButton(
                                                     onPressed: () {

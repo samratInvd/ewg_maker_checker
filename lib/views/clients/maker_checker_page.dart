@@ -909,34 +909,36 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
                                                                                             // MAP MF UCC WITH JM UCC
                                                                                             // If checker status is approved
                                                                                             if(value.statusCode == "0") {
-                                                                                              ResponseModel mapUccResponse = await apiProvider.postRequest(
-                                                                                                endpoint: 'api/BSEAPI/UpdateUCC',
-                                                                                                body: {
-                                                                                                  "formNo": encryptString(_searchController.text),
-                                                                                                  "mf_UCC": encryptString(_ucc),
-                                                                                                  "ucc": encryptString(singleProfileProvider.clientData['JMUCC'])
-                                                                                                }
-                                                                                                
-                                                                                              );
-                                                                              
-                                                                                              print("UCC SAVE RESPONSE: " + mapUccResponse.toJson().toString());
+                                                                                              Future.delayed(Duration(seconds: 2), () async {
+                                                                                                ResponseModel mapUccResponse = await apiProvider.postRequest(
+                                                                                                  endpoint: 'api/BSEAPI/UpdateUCC',
+                                                                                                  body: {
+                                                                                                    "formNo": encryptString(_searchController.text),
+                                                                                                    "mf_UCC": encryptString(_ucc),
+                                                                                                    "ucc": encryptString(singleProfileProvider.clientData['JMUCC'])
+                                                                                                  }
+                                                                                                  
+                                                                                                );
+                                                                                
+                                                                                                print("UCC SAVE RESPONSE: " + mapUccResponse.toJson().toString());
 
-                                                                                              showDialog(
-                                                                                                context: context, 
-                                                                                                builder: (context) {
-                                                                                                  return AlertDialog(
-                                                                                                    content: Text("Approval Confirmed! MF UCC: $_ucc", style: TextStyle(fontFamily: 'SemiBold', color: Color(0xff461257)),),
-                                                                                                    actions: [
-                                                                                                      TextButton(
-                                                                                                        onPressed: () {
-                                                                                                          Navigator.pop(context);
-                                                                                                        }, 
-                                                                                                        child: Text("Ok", style: TextStyle(color: Color(0xff461257)),)
-                                                                                                      )
-                                                                                                    ],
-                                                                                                  );
-                                                                                                }
-                                                                                              );
+                                                                                                showDialog(
+                                                                                                  context: context, 
+                                                                                                  builder: (context) {
+                                                                                                    return AlertDialog(
+                                                                                                      content: Text("Approval Confirmed! MF UCC: $_ucc", style: TextStyle(fontFamily: 'SemiBold', color: Color(0xff461257)),),
+                                                                                                      actions: [
+                                                                                                        TextButton(
+                                                                                                          onPressed: () {
+                                                                                                            Navigator.pop(context);
+                                                                                                          }, 
+                                                                                                          child: Text("Ok", style: TextStyle(color: Color(0xff461257)),)
+                                                                                                        )
+                                                                                                      ],
+                                                                                                    );
+                                                                                                  }
+                                                                                                );
+                                                                                              });
                                                                                             } else {
                                                                                               // If checker details is not approved error
                                                                                               showDialog(

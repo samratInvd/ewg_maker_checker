@@ -26,23 +26,15 @@ class _SplashScreenState extends State<SplashScreen> {
       .then((_) async {
 
 
-        // Fetching all the client details from 1200 to 1300
-        // for(int formNo = 1220; formNo < 1301; formNo++) {
-        //    ResponseModel allClientsResponseModel = await Provider.of<ApiProvider>(context, listen: false).postRequest(
-        //     endpoint: 'api/RM/Get_ClientDetailsForChecker',
-        //     body: {
-        //       "FormNo": encryptString("1223")
-        //     }
-        //   );
-
-        //   Provider.of<SingleProfileProvider>(context, listen: false).setAllClients(allClientsResponseModel.data!['clientDetailsForCheckerMaker'][0]);          
-        //   print(allClientsResponseModel.toJson());
-        // }
-
+        /// Making a POST request to the API endpoint 'api/RM/Get_ClientDetailsForChecker' with a request body
+        /// containing a key-value pair where the key is "FormNo" and the value is the encrypted string
+        /// "1241". The response from the API is stored in a ResponseModel object called responseModel using
+        /// the await keyword to wait for the response to be returned before continuing with the execution of
+        /// the code.
         ResponseModel responseModel = await Provider.of<ApiProvider>(context, listen: false).postRequest(
           endpoint: 'api/RM/Get_ClientDetailsForChecker',
           body: {
-            "FormNo": encryptString("1241")
+            "FormNo": encryptString("1222")
           }
         );
 

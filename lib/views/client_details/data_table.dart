@@ -47,7 +47,7 @@ class DataTableWidget extends StatelessWidget {
     return Consumer<ClientDetailsProvider>(
         builder: (context, provider, child) {
           if (provider.clientDetails == null) {
-            provider.fetchClientDetails();
+            provider.fetchClientDetails(context);
             return Center(
               child: CircularProgressIndicator(),
             );
@@ -55,8 +55,10 @@ class DataTableWidget extends StatelessWidget {
             return Center(
               child: Text('No client details found.'),
             );
-          } else {
+          } else {                        
             return DataTable(
+              columnSpacing: 20,
+              dataRowHeight: 50,
               columns: [
                 DataColumn(label: Text('Form ID')),
                 DataColumn(label: Text('Mobile No')),
@@ -68,6 +70,7 @@ class DataTableWidget extends StatelessWidget {
                 DataColumn(label: Text('Last Name')),
                 DataColumn(label: Text('Gender')),
                 DataColumn(label: Text('Description')),
+                DataColumn(label: Text('Edit Button')),
               ],
               rows: provider.clientDetails!.map((clientDetail) {
                 return DataRow(

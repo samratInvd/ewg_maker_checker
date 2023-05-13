@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:ewg_maker_checker/providers/api_provider.dart';
 import 'package:ewg_maker_checker/providers/bse_api_provider.dart';
 import 'package:ewg_maker_checker/providers/client_details_provider.dart';
+import 'package:ewg_maker_checker/providers/routes_provider.dart';
 import 'package:ewg_maker_checker/providers/single_profile_provider.dart';
 import 'package:ewg_maker_checker/views/clients/maker_checker_page.dart';
 import 'package:ewg_maker_checker/views/dashboard/dashboard_page.dart';
@@ -29,7 +30,8 @@ void main() {
         ChangeNotifierProvider(create: (context) => ApiProvider(),),
         ChangeNotifierProvider(create: (context) => SingleProfileProvider(),),
         ChangeNotifierProvider(create: (context) => BseApiProvider(),),
-        ChangeNotifierProvider(create: (context) => ClientDetailsProvider())
+        ChangeNotifierProvider(create: (context) => ClientDetailsProvider()),
+        ChangeNotifierProvider(create: (context) => RoutesProvider())
       ],
       child: MyApp(),
     )

@@ -44,7 +44,7 @@ dependencies:
   full_screen_image: ^2.0.0
   dart_des: ^1.0.2
   dart_ipify: ^1.1.1
-  syncfusion_flutter_pdfviewer: ^21.1.37
+  syncfusion_flutter_pdfviewer:
 
 
 dev_dependencies:

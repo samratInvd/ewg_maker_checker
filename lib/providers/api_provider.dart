@@ -66,7 +66,7 @@ class ApiProvider extends ChangeNotifier {
   }
 
   // This is a secondary post request function made for another loader in a page for 2 different api calls
-  Future<ResponseModel> postRequest2({String? endpoint, Map<String, dynamic>? body}) async {     
+  Future<ResponseModel> postRequest2({String? endpoint, Map<String, dynamic>? body}) async {
     try {
       print(_baseUrl + endpoint!);
       _isLoading2 = true;
@@ -84,7 +84,7 @@ class ApiProvider extends ChangeNotifier {
 
       _isLoading2 = false;
       notifyListeners();
-      return responseModel;   
+      return responseModel;
     } catch (e) {
       log(e.toString());
       ResponseModel emptyResponse = ResponseModel(message: e.toString());
@@ -118,5 +118,6 @@ class ApiProvider extends ChangeNotifier {
       return emptyResponse;
     }    
   }
+
 
 }

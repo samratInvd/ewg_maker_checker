@@ -4,6 +4,8 @@ import 'package:ewg_maker_checker/views/dynamic_updates/dynamic_updates.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_admin_scaffold/admin_scaffold.dart';
 
+import 'client_details/client_details_page.dart';
+
 class LayoutPage extends StatefulWidget {
   const LayoutPage({super.key});
 
@@ -12,11 +14,12 @@ class LayoutPage extends StatefulWidget {
 }
 
 class _LayoutPageState extends State<LayoutPage> {
-  String selectedRoute = "/makerChecker";
+  String selectedRoute = "/clientDetails";
   Map<String, dynamic> routes = {
     "/dashboard": DashboardPage(),
     "/makerChecker": MakerCheckerPage(),
     "/dynamicUpdates": DynamicUpdatesPage(),
+    "/clientDetails": ClientDetailsPage()
   };
 
 
@@ -56,6 +59,10 @@ class _LayoutPageState extends State<LayoutPage> {
               AdminMenuItem(
                 title: 'Maker / Checker',
                 route: '/makerChecker',
+              ),
+              AdminMenuItem(
+                title: 'ClientDetails',
+                route: '/clientDetails',
               ),
             ],
           ),

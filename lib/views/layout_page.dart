@@ -24,6 +24,7 @@ class _LayoutPageState extends State<LayoutPage> {
     "/clientDetails": ClientDetailsPage()
   };
 
+  String dropdownValue = 'Pending';
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +54,7 @@ class _LayoutPageState extends State<LayoutPage> {
                 // icon: Icons.file_copy,
                 children: [
                   /*AdminMenuItem(
-                    title: 'Clients',
+                    title: 'Client',
                     route: '/a',
                   ),*/
                   AdminMenuItem(
@@ -120,3 +121,4 @@ class _LayoutPageState extends State<LayoutPage> {
     );
   }
 }
+

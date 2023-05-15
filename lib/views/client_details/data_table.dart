@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 import '../../providers/client_details_provider.dart';
 
 class DataTableWidget extends StatelessWidget {
-
+  String flag = "Pending";
   Color getColor1(Set<MaterialState> states) {
     return Colors.purple.shade100;
   }
@@ -28,7 +28,7 @@ class DataTableWidget extends StatelessWidget {
           SingleProfileProvider singleProfileProvider,
           child) {
         if (clientDetailsProvider.clientDetails == null) {
-          clientDetailsProvider.fetchClientDetails(context);
+          clientDetailsProvider.fetchClientDetails(context,flag);
           return Center(
             child: CircularProgressIndicator(),
           );

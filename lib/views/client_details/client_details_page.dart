@@ -132,7 +132,8 @@ class _ClientDetailsPageState extends State<ClientDetailsPage> {
                   border: Border.all(width: 1,color: Color(0xff461257),),
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                 ),
-                child: DataTableWidget(),
+                child:
+                DataTableWidget(),
               ),
               SizedBox(
                 height: 30,

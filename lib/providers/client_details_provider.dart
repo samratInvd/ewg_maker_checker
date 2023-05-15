@@ -11,7 +11,7 @@ import '../data/encryption.dart';
 class ClientDetailsProvider extends ChangeNotifier{
 
   List<ClientDetails>? _clientDetails;
-  String Flag = "Pending";
+
   List<ClientDetails>? get clientDetails => _clientDetails;
 
   void setClientDetails(List<ClientDetails>? clientDetails) {
@@ -20,7 +20,7 @@ class ClientDetailsProvider extends ChangeNotifier{
   }
 
 
-  Future<void> fetchClientDetails(BuildContext context) async {
+  Future<void> fetchClientDetails(BuildContext context,String Type) async {
     // Fetch client details from API or database and update the _clientDetails list
     // For example, you can use the GetClientDetails class to fetch the data and convert it to a list of ClientDetails objects
     List<ClientDetails> clientDetailsList = [];
@@ -31,7 +31,7 @@ class ClientDetailsProvider extends ChangeNotifier{
     ResponseModel responseModel = await Provider.of<ApiProvider>(context, listen: false).postRequest(
       endpoint: 'api/RM/Get_ClientDetails',
       body: {
-        "flag": encryptString(Flag)
+        "flag": encryptString(Type)
       }
     );        
     /// `List<dynamic> clientDetailsListMap = responseModel.data!['clientDetails'];` is extracting the

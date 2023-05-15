@@ -10,18 +10,15 @@ import '../data/encryption.dart';
 
 class ClientDetailsProvider extends ChangeNotifier{
 
-  // String _baseUrl = "https://edgewealth.jmfonline.in/";
-
-  // String _authToken = "";
-
   List<ClientDetails>? _clientDetails;
-
+  String Flag = "Pending";
   List<ClientDetails>? get clientDetails => _clientDetails;
 
   void setClientDetails(List<ClientDetails>? clientDetails) {
     _clientDetails = clientDetails;
     notifyListeners();
   }
+
 
   Future<void> fetchClientDetails(BuildContext context) async {
     // Fetch client details from API or database and update the _clientDetails list
@@ -34,7 +31,7 @@ class ClientDetailsProvider extends ChangeNotifier{
     ResponseModel responseModel = await Provider.of<ApiProvider>(context, listen: false).postRequest(
       endpoint: 'api/RM/Get_ClientDetails',
       body: {
-        "flag": encryptString("Pending")
+        "flag": encryptString(Flag)
       }
     );        
     /// `List<dynamic> clientDetailsListMap = responseModel.data!['clientDetails'];` is extracting the

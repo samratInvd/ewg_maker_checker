@@ -123,6 +123,9 @@ class _ClientDetailsPageState extends State<ClientDetailsPage> {
                 height: 30,
               ),
               Container(
+                /*constraints:BoxConstraints(
+                  maxHeight: double.maxFinite,
+                ),*/
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height,
                 decoration: BoxDecoration(
@@ -130,6 +133,9 @@ class _ClientDetailsPageState extends State<ClientDetailsPage> {
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                 ),
                 child: DataTableWidget(),
+              ),
+              SizedBox(
+                height: 30,
               )
             ],
           ),

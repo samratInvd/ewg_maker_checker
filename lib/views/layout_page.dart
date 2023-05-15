@@ -40,7 +40,7 @@ class _LayoutPageState extends State<LayoutPage> {
             backgroundColor: Color(0xff9F4BBB),
             activeBackgroundColor: Color(0xff9F4BBB),
             // activeBackgroundColor: Color(0xff8A3DA3),
-            activeTextStyle: TextStyle(color: Colors.white, fontSize: 14, fontFamily: 'SemiBold'),
+            activeTextStyle: TextStyle(color: Colors.white, fontSize: 14),
             textStyle: TextStyle(color: Colors.white, fontSize: 14),
             borderColor: Colors.transparent,
             items: const [
@@ -49,13 +49,13 @@ class _LayoutPageState extends State<LayoutPage> {
                 route: '/dashboard',   
               ),
               AdminMenuItem(
-                title: 'Clients',
+                title: 'Client',
                 // icon: Icons.file_copy,
                 children: [
-                  AdminMenuItem(
+                  /*AdminMenuItem(
                     title: 'Clients',
                     route: '/a',
-                  ),
+                  ),*/
                   AdminMenuItem(
                     title: 'Onboard new clients',
                     route: '/a',
@@ -65,9 +65,17 @@ class _LayoutPageState extends State<LayoutPage> {
                     route: '/makerChecker',
                   ),
                   AdminMenuItem(
-                    title: 'ClientDetails',
+                    title: 'Pending Clients',
                     route: '/clientDetails',
                   ),
+                  /*AdminMenuItem(
+                    title: 'Approved Clients',
+                    route: '/clientDetails',
+                  ),
+                  AdminMenuItem(
+                    title: 'Rejected Clients',
+                    route: '/clientDetails',
+                  ),*/
                 ],
               ),
               AdminMenuItem(
@@ -94,7 +102,6 @@ class _LayoutPageState extends State<LayoutPage> {
                 title: 'Downloads',
                 route: '/a',   
               ),
-
             ],
             selectedRoute: routesProvider.selectedRoute,
             // routesProvider.selectedRoute: '/makerChecker',        

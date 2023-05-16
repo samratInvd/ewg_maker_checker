@@ -66,7 +66,7 @@ class _LayoutPageState extends State<LayoutPage> {
                     route: '/makerChecker',
                   ),
                   AdminMenuItem(
-                    title: 'Pending Clients',
+                    title: 'All Clients',
                     route: '/clientDetails',
                   ),
                   /*AdminMenuItem(

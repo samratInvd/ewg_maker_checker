@@ -8,8 +8,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/client_details_provider.dart';
 
-class DataTableWidget extends StatelessWidget {
-  String flag = "Pending";
+class DataTableWidget extends StatefulWidget {
+  final String flag;
+  const DataTableWidget({Key? key, required this.flag}) : super(key: key);
+
+  @override
+  State<DataTableWidget> createState() => _DataTableWidgetState();
+}
+
+class _DataTableWidgetState extends State<DataTableWidget> {
   Color getColor1(Set<MaterialState> states) {
     return Colors.purple.shade100;
   }
@@ -28,7 +35,7 @@ class DataTableWidget extends StatelessWidget {
           SingleProfileProvider singleProfileProvider,
           child) {
         if (clientDetailsProvider.clientDetails == null) {
-          clientDetailsProvider.fetchClientDetails(context,flag);
+          clientDetailsProvider.fetchClientDetails(context, widget.flag);
           return Center(
             child: CircularProgressIndicator(),
           );

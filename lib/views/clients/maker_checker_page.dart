@@ -888,12 +888,12 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
 
                                                                                           singleProfileProvider.setFinalStatus(1);
                               
-                                                                                          print(singleProfileProvider.formNo.runtimeType);
-                                                                                          print(singleProfileProvider.clientData['PAN'].toString().runtimeType);
-                                                                                          print(singleProfileProvider.chequeStatus.toString().runtimeType);
-                                                                                          print(singleProfileProvider.signStatus.toString().runtimeType);
-                                                                                          print(singleProfileProvider.photoLiveStatus.toString().runtimeType);
-                                                                                          print(singleProfileProvider.finalStatus.toString().runtimeType);
+                                                                                          print(singleProfileProvider.formNo);
+                                                                                          print(singleProfileProvider.clientData['PAN'].toString());
+                                                                                          print(singleProfileProvider.chequeStatus.toString());
+                                                                                          print(singleProfileProvider.signStatus.toString());
+                                                                                          print(singleProfileProvider.photoLiveStatus.toString());
+                                                                                          print(singleProfileProvider.finalStatus.toString());
                                                                               
                                                                                           ResponseModel setFinalStatusResponseModel = await apiProvider.postRequest(
                                                                                             endpoint: "api/RM/CheckerApproved",

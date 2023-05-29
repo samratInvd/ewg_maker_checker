@@ -34,7 +34,7 @@ class _SplashScreenState extends State<SplashScreen> {
         ResponseModel responseModel = await Provider.of<ApiProvider>(context, listen: false).postRequest(
           endpoint: 'api/RM/Get_ClientDetailsForChecker',
           body: {
-            "FormNo": encryptString("1233")
+            "FormNo": Provider.of<ApiProvider>(context, listen: false).baseUrl.contains("edgewealth") ? encryptString("1226") : encryptString("1233")
           }
         );
 

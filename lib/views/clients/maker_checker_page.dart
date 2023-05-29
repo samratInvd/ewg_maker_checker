@@ -49,7 +49,7 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
 
     // UCC
     Response getUCC = await post(
-      Uri.parse("http://jmuatapi.invd.in/api/ClientSignUp/SignUp"),
+      Uri.parse("https://jmbseapi.invd.in/api/ClientSignUp/SignUp"),
       body: {
         "ParamValue": encryptStringBSE("${clientData['First Name']} ${clientData['Middle Name'] == "null" || clientData['Middle Name'] == null ? "" : clientData['Middle Name']} ${clientData['Last Name']}|${clientData['EmailId']}|${clientData['MobileNo']}|${ipV4}|OWNCL00001|${clientData['JMUCC']}")
       }    
@@ -68,7 +68,7 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
   callSessionId() async {
     // SESSIONID
     Response getSessionIdResponse = await post(
-      Uri.parse("http://jmuatapi.invd.in/api/Common/GenerateClientSession"),
+      Uri.parse("https://jmbseapi.invd.in/api/Common/GenerateClientSession"),
       body: {
         "ParamValue": encryptStringBSE("$_ucc")
       }      
@@ -87,7 +87,7 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
   callUpdatePrimaryInfo(Map<String, dynamic> clientData) async {
     // PRIMARYINFO
     Response updatePrimaryInfoResponse = await post(
-      Uri.parse("http://jmuatapi.invd.in/api/ClientOnboard/UpdatePersonalInfoPrimary"),
+      Uri.parse("https://jmbseapi.invd.in/api/ClientOnboard/UpdatePersonalInfoPrimary"),
       body:
         {
           "ParamValue": encryptStringBSE(
@@ -104,7 +104,7 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
   callUpdateClientType(Map<String, dynamic> clientData) async {
     //CLIENT TYPE
     Response getClientTypeResponse = await post(
-      Uri.parse("http://jmuatapi.invd.in/api/ClientOnboard/UpdateClientType"),
+      Uri.parse("https://jmbseapi.invd.in/api/ClientOnboard/UpdateClientType"),
       body:
         {
           "ParamValue": encryptStringBSE(
@@ -128,7 +128,7 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
     dob = "$year-$month-$day";
 
     Response getCvlResponse = await post(
-      Uri.parse("http://jmuatapi.invd.in/api/ClientOnboard/CheckCVLPrimary"),
+      Uri.parse("https://jmbseapi.invd.in/api/ClientOnboard/CheckCVLPrimary"),
       body:
         {
           "ParamValue": encryptStringBSE(
@@ -145,7 +145,7 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
   callUpdateNomineeInfo(Map<String, dynamic> clientData) async {
      // NOMINEE INFO
     Response getNomineeInfo = await post(
-      Uri.parse("http://jmuatapi.invd.in/api/ClientOnboard/UpdateNomineeInfo"),
+      Uri.parse("https://jmbseapi.invd.in/api/ClientOnboard/UpdateNomineeInfo"),
       body:
         {
           "ParamValue": encryptStringBSE(
@@ -162,7 +162,7 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
   callUpdateAddress(Map<String, dynamic> clientData) async {
     // ADDRESS
     Response getAddressResponse = await post(
-      Uri.parse("http://jmuatapi.invd.in/api/ClientOnboard/UpdatePrimaryAddress"),
+      Uri.parse("https://jmbseapi.invd.in/api/ClientOnboard/UpdatePrimaryAddress"),
       body:
         {
           "ParamValue": encryptStringBSE(
@@ -180,7 +180,7 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
   callBankDetails(Map<String, dynamic> clientData) async {
     // BANK DETAILS
     Response getBankDetailsResponse = await post(
-      Uri.parse("http://jmuatapi.invd.in/api/ClientOnboard/UpdateBankDetails"),
+      Uri.parse("https://jmbseapi.invd.in/api/ClientOnboard/UpdateBankDetails"),
       body:
         {
           "ParamValue": encryptStringBSE(
@@ -199,7 +199,7 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
     print("$_ucc|$_sessionId|01|${clientData['Per City']}|IN|IN|${clientData['PAN']}|C|01|32||N||");
     // FATCA
     Response getFatcaDetailsResponse = await post(
-      Uri.parse("http://jmuatapi.invd.in/api/ClientOnboard/UpdateFatcaInfo"),
+      Uri.parse("https://jmbseapi.invd.in/api/ClientOnboard/UpdateFatcaInfo"),
       body:
         {
           "ParamValue": encryptStringBSE(
@@ -217,7 +217,7 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
   callSignDoc(Map<String, dynamic> clientData) async {
     // SIGN
     Response getClientDoc = await post(
-      Uri.parse("http://jmuatapi.invd.in/api/ClientOnboard/UpdateClientDocs"),
+      Uri.parse("https://jmbseapi.invd.in/api/ClientOnboard/UpdateClientDocs"),
       body:
         {
           "ParamValue": encryptStringBSE(
@@ -235,7 +235,7 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
   callChequeDoc(Map<String, dynamic> clientData) async {
     // CHEQUE
     Response getClientDocCheque = await post(
-      Uri.parse("http://jmuatapi.invd.in/api/ClientOnboard/UpdateClientDocs"),
+      Uri.parse("https://jmbseapi.invd.in/api/ClientOnboard/UpdateClientDocs"),
       body:
         {
           "ParamValue": encryptStringBSE(
@@ -255,7 +255,7 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
   uploadDataToBSE() async {
     // UPLOAD DATA TO BSE
     Response getUploadDatatoBSEResponse = await post(
-      Uri.parse("http://jmuatapi.invd.in/api/ClientOnboard/UploadDataToBSE"),
+      Uri.parse("https://jmbseapi.invd.in/api/ClientOnboard/UploadDataToBSE"),
       body:
         {
           "ParamValue": encryptStringBSE(

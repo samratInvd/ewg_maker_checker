@@ -10,9 +10,9 @@ class ApiProvider extends ChangeNotifier {
 
   // This is the base url for all the APIs
   ///-------------- UAT SERVER URL --------------///
-  // String _baseUrl = "https://superappapi_uat.jmfonline.in/";
+  String _baseUrl = "https://superappapi_uat.jmfonline.in/";
   ///-------------- LIVE SERVER URL --------------///
-  String _baseUrl = "https://edgewealth.jmfonline.in/";
+  // String _baseUrl = "https://edgewealth.jmfonline.in/";
 
   // The auth token (jwt) will be set in this variable
   String _authToken = "";

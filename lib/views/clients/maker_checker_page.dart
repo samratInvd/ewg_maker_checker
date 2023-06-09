@@ -34,12 +34,12 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
 
   bool _isClientApproved = false;
 
-  Map<String, String> relationships = {
-    "Dependent Child": "DC",
-    "Dependent Parents": "DP",
-    "Spouse": "SP",
-    "Siblings": "DS"
-  };
+  // Map<String, String> relationships = {
+  //   "Dependent Child": "DC",
+  //   "Dependent Parents": "DP",
+  //   "Spouse": "SP",
+  //   "Siblings": "DS"
+  // };
 
 
   //------------ BSE APIS ------------//
@@ -149,7 +149,7 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
       body:
         {
           "ParamValue": encryptStringBSE(
-            "$_ucc|$_sessionId|${clientData['Nominee Name']}|${relationships[clientData['Nominee Relationship']]}"
+            "$_ucc|$_sessionId|${clientData['Nominee Name']}|${clientData['Nominee Relationship']}"
           )
         }      
     );

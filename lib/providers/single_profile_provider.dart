@@ -162,7 +162,7 @@ class SingleProfileProvider extends ChangeNotifier {
   void clearAllClients() {
     _allClients.clear();
     notifyListeners();
-  }
+  }  
 
 
   // //------- CALL BSE APIS TO REGISTER THE CLIENT TO BSE FOR TRANSACTIONS -------//
@@ -185,7 +185,7 @@ class SingleProfileProvider extends ChangeNotifier {
     
   //   // UCC CREATION
   //   Response response1 = await post(
-  //     Uri.parse("http://jmuatapi.invd.in/api/ClientSignUp/SignUp"),
+  //     Uri.parse("https://jmbseapi.invd.in/api/ClientSignUp/SignUp"),
   //     body: jsonEncode({
   //       "ParamValue": encryptStringBSE("${data['First Name']} ${data['Middle Name']} ${data['Last Name']}|${data['EmailId']}|${data['MobileNo']}|$ip4String|OWNCL00001")
   //     })
@@ -196,7 +196,7 @@ class SingleProfileProvider extends ChangeNotifier {
 
   //   // SESSION ID CREATION
   //   Response response2 = await post(
-  //     Uri.parse("http://jmuatapi.invd.in/api/Common/GenerateClientSession"),
+  //     Uri.parse("https://jmbseapi.invd.in/api/Common/GenerateClientSession"),
   //     body: jsonEncode({
   //       "ParamValue": encryptStringBSE("$_ucc")
   //     })
@@ -207,7 +207,7 @@ class SingleProfileProvider extends ChangeNotifier {
 
   //   // UDPATE PERSONAL INFO
   //   Response response3= await post(
-  //     Uri.parse("http://jmuatapi.invd.in/api/ClientOnboard/UpdatePersonalInfoPrimary"),
+  //     Uri.parse("https://jmbseapi.invd.in/api/ClientOnboard/UpdatePersonalInfoPrimary"),
   //     body: jsonEncode({
   //       "ParamValue": encryptStringBSE("$_ucc|$_sessionId|${data['Gender']}|01|${data['Middle Name']}|${data['First Name']} ${data['Middle Name']} ${data['Last Name']}|91-${data['MobileNo']}|${data['EmailId']}||")
   //     })
@@ -216,7 +216,7 @@ class SingleProfileProvider extends ChangeNotifier {
 
   //   // UPDATE CLIENT TYPE
   //   Response response4 = await post(
-  //     Uri.parse("http://jmuatapi.invd.in/api/ClientOnboard/UpdateClientType"),
+  //     Uri.parse("https://jmbseapi.invd.in/api/ClientOnboard/UpdateClientType"),
   //     body: jsonEncode({
   //       "ParamValue": encryptStringBSE("$_ucc|$_sessionId|single|01")
   //     })
@@ -225,7 +225,7 @@ class SingleProfileProvider extends ChangeNotifier {
 
   //   // UPDATE NOMINEE INFO
   //   Response response5 = await post(
-  //     Uri.parse("http://jmuatapi.invd.in/api/ClientOnboard/UpdateNomineeInfo"),
+  //     Uri.parse("https://jmbseapi.invd.in/api/ClientOnboard/UpdateNomineeInfo"),
   //     body: jsonEncode({
   //       "ParamValue": encryptStringBSE("$_ucc|$_sessionId|${data['Nominee Name']}|DC")
   //     })
@@ -234,7 +234,7 @@ class SingleProfileProvider extends ChangeNotifier {
 
   //   // UPDATE PRIMARY ADDRESS
   //   Response response6 = await post(
-  //     Uri.parse("http://jmuatapi.invd.in/api/ClientOnboard/UpdatePrimaryAddress"),
+  //     Uri.parse("https://jmbseapi.invd.in/api/ClientOnboard/UpdatePrimaryAddress"),
   //     body: jsonEncode({
   //       "ParamValue": encryptStringBSE("$_ucc|$_sessionId|${data['Per Address 1']},${data['Per Address 2']},${data['Per Address 3']}|${data['Place of birth']}|MA|${data['PerPincode']}")
   //     })
@@ -243,7 +243,7 @@ class SingleProfileProvider extends ChangeNotifier {
 
   //   // UPDATE BANK DETAILS
   //   // Response response7 = await post(
-  //   //   Uri.parse("http://jmuatapi.invd.in/api/ClientSignUp/SignUp"),
+  //   //   Uri.parse("https://jmbseapi.invd.in/api/ClientSignUp/SignUp"),
   //   //   body: jsonEncode({
   //   //     "ParamValue": encryptStringBSE("${data['First Name']} ${data['Middle Name']} ${data['Last Name']}|${data['EmailId']}|${data['MobileNo']}|$ip4String|OWNCL00001")
   //   //   })
@@ -251,7 +251,7 @@ class SingleProfileProvider extends ChangeNotifier {
 
   //   // // UCC CREATION
   //   // Response response1 = await post(
-  //   //   Uri.parse("http://jmuatapi.invd.in/api/ClientSignUp/SignUp"),
+  //   //   Uri.parse("https://jmbseapi.invd.in/api/ClientSignUp/SignUp"),
   //   //   body: jsonEncode({
   //   //     "ParamValue": encryptStringBSE("${data['First Name']} ${data['Middle Name']} ${data['Last Name']}|${data['EmailId']}|${data['MobileNo']}|$ip4String|OWNCL00001")
   //   //   })
@@ -259,7 +259,7 @@ class SingleProfileProvider extends ChangeNotifier {
 
   //   // // UCC CREATION
   //   // Response response1 = await post(
-  //   //   Uri.parse("http://jmuatapi.invd.in/api/ClientSignUp/SignUp"),
+  //   //   Uri.parse("https://jmbseapi.invd.in/api/ClientSignUp/SignUp"),
   //   //   body: jsonEncode({
   //   //     "ParamValue": encryptStringBSE("${data['First Name']} ${data['Middle Name']} ${data['Last Name']}|${data['EmailId']}|${data['MobileNo']}|$ip4String|OWNCL00001")
   //   //   })

@@ -109,6 +109,7 @@ class _DataTableWidgetState extends State<DataTableWidget> {
                                   "FormNo":
                                       encryptString("${clientDetail.formID}")
                                 }).then((response) async {
+                                  Provider.of<SingleProfileProvider>(context, listen: false).setFormNo(clientDetail.formID.toString());
                               /// This code block is checking the `statusCode` of the `response` received
                               /// from a POST request made to an API endpoint. If the `statusCode` is not
                               /// equal to `"0"`, it means that there was an error in the request and the

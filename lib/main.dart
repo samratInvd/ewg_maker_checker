@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'EWG Maker Checker',
+      title: 'New Custom Web Drawer',
       theme: ThemeData(
         primarySwatch: Colors.grey,
         fontFamily: 'Medium'

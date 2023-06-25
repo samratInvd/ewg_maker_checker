@@ -33,21 +33,22 @@ class _LayoutPageState extends State<LayoutPage> {
         return AdminScaffold(
           backgroundColor: Colors.white,
           appBar: AppBar(
+
             title: Text('JM Financial', style: TextStyle(color: Colors.white, fontFamily: 'Bold'),),
             backgroundColor: Color(0xff461257),
             iconTheme: IconThemeData(color: Colors.white),
           ),
           sideBar: SideBar(
             backgroundColor: Color(0xff9F4BBB),
-            activeBackgroundColor: Color(0xff9F4BBB),
-            // activeBackgroundColor: Color(0xff8A3DA3),
+            activeBackgroundColor: Colors.deepPurple,
+            //activeBackgroundColor: Color(0xff8A3DA3),
             activeTextStyle: TextStyle(color: Colors.white, fontSize: 14),
             textStyle: TextStyle(color: Colors.white, fontSize: 14),
             borderColor: Colors.transparent,
             items: const [
               AdminMenuItem(
                 title: 'Dashboard',
-                route: '/dashboard',   
+                route: '/dashboard',
               ),
               AdminMenuItem(
                 title: 'Client',
@@ -81,36 +82,38 @@ class _LayoutPageState extends State<LayoutPage> {
               ),
               AdminMenuItem(
                 title: 'Dynamic Updates',
-                route: '/dynamicUpdates',   
+                route: '/dynamicUpdates',
               ),
               AdminMenuItem(
                 title: 'Roles Management',
-                route: '/a',   
+                route: '/a',
               ),
               AdminMenuItem(
                 title: 'Other',
-                route: '/a',   
+                route: '/a',
               ),
               AdminMenuItem(
                 title: 'Settings',
-                route: '/a',   
+                route: '/a',
               ),
               AdminMenuItem(
                 title: 'Research',
-                route: '/a',   
+                route: '/a',
               ),
               AdminMenuItem(
                 title: 'Downloads',
-                route: '/a',   
+                route: '/a',
               ),
             ],
             selectedRoute: routesProvider.selectedRoute,
-            // routesProvider.selectedRoute: '/makerChecker',        
-            onSelected: (item) {              
+            // routesProvider.selectedRoute: '/makerChecker',
+            onSelected: (item) {
               /// `routesProvider.setSelectedRoute(item.route!);` is setting the selected route in the
               /// `RoutesProvider` to the route of the selected menu item. The `!` operator is used to
               /// assert that `item.route` is not null, since it is a non-nullable type.
               routesProvider.setSelectedRoute(item.route!);
+              //AppCubit.get(context).screenSelector(item);
+
             },
           ),
           body: SingleChildScrollView(

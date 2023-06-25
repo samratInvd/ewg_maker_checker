@@ -286,7 +286,7 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
   Widget build(BuildContext context) {
     return Consumer3<SingleProfileProvider, ApiProvider, BseApiProvider>(
       builder: (context, SingleProfileProvider singleProfileProvider, ApiProvider apiProvider, BseApiProvider bseApiProvider, _) {
-        return Container(
+        return Scaffold(body: Container(
           width: MediaQuery.of(context).size.width,
           child: Column(
             children: [
@@ -922,22 +922,26 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
                                                                                 
                                                                                                 print("UCC SAVE RESPONSE: " + mapUccResponse.toJson().toString());
 
-                                                                                                showDialog(
-                                                                                                  context: context, 
-                                                                                                  builder: (context) {
-                                                                                                    return AlertDialog(
-                                                                                                      content: Text("Approval Confirmed! MF UCC: $_ucc", style: TextStyle(fontFamily: 'SemiBold', color: Color(0xff461257)),),
-                                                                                                      actions: [
-                                                                                                        TextButton(
-                                                                                                          onPressed: () {
-                                                                                                            Navigator.pop(context);
-                                                                                                          }, 
-                                                                                                          child: Text("Ok", style: TextStyle(color: Color(0xff461257)),)
-                                                                                                        )
-                                                                                                      ],
-                                                                                                    );
-                                                                                                  }
-                                                                                                );
+                                                                                                if(mapUccResponse.statusCode.toString() != "0") {
+                                                                                                  showErrorDialog(context, "${mapUccResponse.message}");
+                                                                                                } else {
+                                                                                                  showDialog(
+                                                                                                    context: context, 
+                                                                                                    builder: (context) {
+                                                                                                      return AlertDialog(
+                                                                                                        content: Text("Approval Confirmed! MF UCC: $_ucc", style: TextStyle(fontFamily: 'SemiBold', color: Color(0xff461257)),),
+                                                                                                        actions: [
+                                                                                                          TextButton(
+                                                                                                            onPressed: () {
+                                                                                                              Navigator.pop(context);
+                                                                                                            }, 
+                                                                                                            child: Text("Ok", style: TextStyle(color: Color(0xff461257)),)
+                                                                                                          )
+                                                                                                        ],
+                                                                                                      );
+                                                                                                    }
+                                                                                                  );
+                                                                                                }                                                                                                
                                                                                               });
                                                                                             } else {
                                                                                               // If checker details is not approved error
@@ -1029,7 +1033,7 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
               )
             ],
           ),
-        );
+        ));
       }
     );
   }

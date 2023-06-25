@@ -21,7 +21,7 @@ class _LayoutPageState extends State<LayoutPage> {
     "/dashboard": DashboardPage(),
     "/makerChecker": MakerCheckerPage(),
     "/dynamicUpdates": DynamicUpdatesPage(),
-    "/clientDetails": ClientDetailsPage()
+    // "/clientDetails": ClientDetailsPage()
   };
 
   String dropdownValue = 'Pending';

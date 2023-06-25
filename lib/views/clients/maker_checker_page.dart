@@ -16,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MakerCheckerPage extends StatefulWidget {
   const MakerCheckerPage({super.key});
@@ -735,19 +736,67 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
                               SizedBox(height: 20,),
                               Container(
                                 child: _isClientApproved 
-                                  ? SizedBox(
-                                        height: 40,
-                                        width: MediaQuery.of(context).size.width * 0.2,
-                                        child: MaterialButton(
-                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                                          color: Colors.green,
-                                          onPressed: () {
-                                            print("CLIENT DATA =====> " + Provider.of<SingleProfileProvider>(context, listen: false).clientData.toString());
-                                            // bseApiProvider.onboarding(context, _searchController.text, singleProfileProvider.clientData);
-                                          },
-                                          child: Center(child: Text("Approved", style: TextStyle(color: Colors.white, fontFamily: 'SemiBold'),)),
+                                  ? Column(
+                                      children: [
+                                        SizedBox(
+                                          height: 40,
+                                          width: MediaQuery.of(context).size.width * 0.2,
+                                          child: MaterialButton(
+                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                                            color: Color(0xff461257),
+                                            onPressed: () async {
+
+                                              ResponseModel responseModel = await apiProvider.postRequest(
+                                                endpoint: "api/BSEAPI/GetUCCbyFormNo",
+                                                body: {
+                                                  "formNo": encryptString(singleProfileProvider.formNo)
+                                                }
+                                              );
+
+                                              setState(() {
+                                                _ucc = responseModel.data!['mF_UCC'];
+                                              });
+
+                                              if(responseModel.statusCode.toString() == "0") {
+                                                callSessionId().then((val) async {
+                                                  Response getClientDocsResponse = await post(
+                                                    Uri.parse("http://jmbseapi.invd.in/api/ClientOnboard/GetClientOnboardDocs"),
+                                                    body: {
+                                                      "ParamValue": encryptStringBSE("$_ucc|$_sessionId")
+                                                    }  
+                                                  );
+
+                                                  var clientDocData = jsonDecode(getClientDocsResponse.body);
+                                                  
+                                                  if(clientDocData['AOFTiffFileURL'] == "") {
+                                                    showErrorDialog(context, "AOF TIFF FILE NOT AVAILABLE");
+                                                  } else {
+                                                    launchUrl(Uri.parse(clientDocData['AOFTiffFileURL'].toString()));
+                                                  }
+                                                });  
+                                              } else {
+                                                showErrorDialog(context, "Clients UCC Not Found in DB");
+                                              }                                                                                    
+                                            },
+                                            child: Center(child: Text("Download AOF Tiff", style: TextStyle(color: Colors.white, fontFamily: 'SemiBold'),)),
+                                          ),
                                         ),
-                                      )
+                                        SizedBox(height: 10,),
+                                        SizedBox(
+                                          height: 40,
+                                          width: MediaQuery.of(context).size.width * 0.2,
+                                          child: MaterialButton(
+                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                                            color: Colors.green,
+                                            onPressed: () {
+                                              print("CLIENT DATA =====> " + Provider.of<SingleProfileProvider>(context, listen: false).clientData.toString());
+                                              // bseApiProvider.onboarding(context, _searchController.text, singleProfileProvider.clientData);
+                                            },
+                                            child: Center(child: Text("Approved", style: TextStyle(color: Colors.white, fontFamily: 'SemiBold'),)),
+                                          ),
+                                        ),
+                                      ],
+                                    )
                                   : Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [

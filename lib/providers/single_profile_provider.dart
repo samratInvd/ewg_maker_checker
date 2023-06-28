@@ -51,8 +51,8 @@ class SingleProfileProvider extends ChangeNotifier {
       "isMinor": data['isMinor'] ?? "N/A",
       "Gurdian": data['Gurdian'] ?? "N/A" ?? "N/A",
       "Residential": data['Country'] ?? "N/A",
-      "Tax Status": data['Country'] ?? "N/A",
-      "Marital Status": data['Marital Status'] ?? "N/A",
+      // "Tax Status": data['Country'] ?? "N/A",
+      // "Marital Status": data['Marital Status'] ?? "N/A",
     };
     Map<String, dynamic> fatcaDetails = {
       "Residential": data['Address Type'] ?? "N/A",
@@ -71,16 +71,14 @@ class SingleProfileProvider extends ChangeNotifier {
       "City": data['Per City'] ?? "N/A",
       "Pincode": data['PerPincode'] ?? "N/A",
       "Country": data['Country'] ?? "N/A",
-      "Place of birth": data['Place of birth'] ?? "N/A",
-      "Country of Tax": data['Country of birth'] ?? "N/A",
     };
     Map<String, dynamic> bankDetails = {
-      "Address": data['Per Address 1'] + ", " + data['Per Address 2'] + ", " + data['Per Address 3'],      
-      "City": data['Per City'] ?? "N/A",
-      "State": data['Per State'] ?? "N/A",
-      "Pincode": data['PerPincode'] ?? "N/A",
-      "Country": data['Country'] ?? "N/A",
-      "Place of birth": data['Place of birth'] ?? "N/A",
+      // "Address": data['Per Address 1'] + ", " + data['Per Address 2'] + ", " + data['Per Address 3'],      
+      // "City": data['Per City'] ?? "N/A",
+      // "State": data['Per State'] ?? "N/A",
+      // "Pincode": data['PerPincode'] ?? "N/A",
+      // "Country": data['Country'] ?? "N/A",
+      // "Place of birth": data['Place of birth'] ?? "N/A",
       "Account Type": data['Account Type'] ?? "N/A",
       "Account No": data['Account No'] ?? "N/A",
       "MICR No": data['MICR No'] ?? "N/A",
@@ -94,9 +92,9 @@ class SingleProfileProvider extends ChangeNotifier {
       "Nomine Date of Birth": data['Nominee  DOB'] ?? "N/A",
     };
     Map<String, dynamic> otherDetails = {    
-      "First Name": data['First Name'] ?? "N/A",
-      "Middle Name": data['Middle Name'] ?? "N/A",
-      "Last Name": data['Last Name'] ?? "N/A",
+      // "First Name": data['First Name'] ?? "N/A",
+      // "Middle Name": data['Middle Name'] ?? "N/A",
+      // "Last Name": data['Last Name'] ?? "N/A",
     };
 
     // ADDING ALL THE MAPS IN THE LIST

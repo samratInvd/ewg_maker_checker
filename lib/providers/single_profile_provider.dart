@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:dart_ipify/dart_ipify.dart';
+// import 'package:dart_ipify/dart_ipify.dart';
 import 'package:ewg_maker_checker/data/encrption_bse.dart';
 import 'package:ewg_maker_checker/providers/api_provider.dart';
 import 'package:flutter/material.dart';

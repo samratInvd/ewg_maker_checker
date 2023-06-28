@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:dart_ipify/dart_ipify.dart';
+// import 'package:dart_ipify/dart_ipify.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:ewg_maker_checker/data/encrption_bse.dart';
 import 'package:ewg_maker_checker/data/encryption.dart';
@@ -14,6 +14,7 @@ import 'package:ewg_maker_checker/views/clients/widgets/photo_expansion_tile.dar
 import 'package:ewg_maker_checker/views/clients/widgets/show_error_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+// import 'package:network_info_plus/network_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -46,13 +47,17 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
   //------------ BSE APIS ------------//
 
   callUCC(Map<String, dynamic> clientData) async {
-    String ipV4 = await Ipify.ipv4();
+    // String ipV4 = await Ipify.ipv4();
+    // final info = NetworkInfo();
+    // String? ip = await info.getWifiIP();
+
+    //TODO: SHOULD PASS PROPER IP WITH A PACKAGE WHICH SUPPORTS WEB
 
     // UCC
     Response getUCC = await post(
       Uri.parse("https://jmuatapi.invd.in/api/ClientSignUp/SignUp"),
       body: {
-        "ParamValue": encryptStringBSE("${clientData['First Name']} ${clientData['Middle Name'] == "null" || clientData['Middle Name'] == null ? "" : clientData['Middle Name']} ${clientData['Last Name']}|${clientData['EmailId']}|${clientData['MobileNo']}|${ipV4}|OWNCL00001|${clientData['JMUCC']}")
+        "ParamValue": encryptStringBSE("${clientData['First Name']} ${clientData['Middle Name'] == "null" || clientData['Middle Name'] == null ? "" : clientData['Middle Name']} ${clientData['Last Name']}|${clientData['EmailId']}|${clientData['MobileNo']}|45.250.51.219|OWNCL00001|${clientData['JMUCC']}")
       }    
     );
     var data = jsonDecode(getUCC.body);
@@ -273,9 +278,16 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
   //------------ BSE APIS END ------------//
 
 
+  // void logIp() async {
+  //   log("IP");
+  //   final info = NetworkInfo();
+  //   String? ip = await info.getWifiIP();
+  //   log("IP Address ====> ${ip}");
+  // }
+
   @override
   void initState() { 
-    // callBseApis(Provider.of<SingleProfileProvider>(context, listen: false).clientData);
+    // logIp();
     Provider.of<SingleProfileProvider>(context, listen: false).setPhotoLiveStatus(Provider.of<SingleProfileProvider>(context, listen: false).clientData['PhotoLive_Status']);
     Provider.of<SingleProfileProvider>(context, listen: false).setChequeStatus(Provider.of<SingleProfileProvider>(context, listen: false).clientData['Cheque_Status']);
     Provider.of<SingleProfileProvider>(context, listen: false).setSignStatus(Provider.of<SingleProfileProvider>(context, listen: false).clientData['Sign_Status']);

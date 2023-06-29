@@ -161,6 +161,9 @@ class _DataTableWidgetState extends State<DataTableWidget> {
                                 print(singleProfileProvider.clientData);
                                 singleProfileProvider
                                     .setFormNo(clientDetail.formID.toString());
+                                singleProfileProvider.setFinalStatus(int.parse(singleProfileProvider.clientData['Final_Status'].toString()));
+
+                                setState(() {});
                       
                       
                                 routesProvider.setSubCurrentTab(1);

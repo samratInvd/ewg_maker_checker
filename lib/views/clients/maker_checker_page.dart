@@ -34,7 +34,7 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
   String _sessionId = "";
   bool _isLoading = false;
 
-  bool _isClientApproved = false;
+  // bool _isClientApproved = false;
 
   // Map<String, String> relationships = {
   //   "Dependent Child": "DC",
@@ -359,13 +359,9 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
                                   
                                   // CHECKING IF THE CLIENT IS APPROVED OR NOT
                                   if(singleProfileProvider.clientData['Final_Status'] == 1) {
-                                    setState(() {
-                                      _isClientApproved = true;
-                                    });
+                                    singleProfileProvider.setFinalStatus(1);
                                   } else {
-                                    setState(() {
-                                      _isClientApproved = false;
-                                    });
+                                    singleProfileProvider.setFinalStatus(0);
                                   }                                                               
                                 }
           
@@ -404,15 +400,12 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
           
           
                                       // CHECKING IF THE CLIENT IS APPROVED OR NOT
+                                      // CHECKING IF THE CLIENT IS APPROVED OR NOT
                                       if(singleProfileProvider.clientData['Final_Status'] == 1) {
-                                        setState(() {
-                                          _isClientApproved = true;
-                                        });
+                                        singleProfileProvider.setFinalStatus(1);
                                       } else {
-                                        setState(() {
-                                          _isClientApproved = false;
-                                        });
-                                      }
+                                        singleProfileProvider.setFinalStatus(0);
+                                      }  
                                       
                                       return response;
                                     });      
@@ -747,7 +740,7 @@ class _MakerCheckerPageState extends State<MakerCheckerPage> {
                               PdfExpansionTile(title: "Esign PDF", pdfUrl: singleProfileProvider.clientData['Esign PDF']),
                               SizedBox(height: 20,),
                               Container(
-                                child: _isClientApproved 
+                                child: singleProfileProvider.finalStatus == 1 
                                   ? Column(
                                       children: [
                                         SizedBox(

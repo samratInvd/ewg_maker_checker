@@ -9,6 +9,11 @@ import 'package:provider/provider.dart';
 
 class SingleProfileProvider extends ChangeNotifier {
 
+  /// The above code defines a private variable `_formNo` and a getter `formNo` to access its value, and
+  /// a setter `setFormNo` to update its value and notify listeners.
+  /// 
+  /// Args:
+  ///   no (String): The parameter "no" is a String that represents the new value for the form number.
   String _formNo = "";
   String get formNo => _formNo;
   void setFormNo(String no) {
@@ -16,6 +21,12 @@ class SingleProfileProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// The function `setClientData` sets the `_clientData` variable to the provided data and notifies
+  /// listeners of the change.
+  /// 
+  /// Args:
+  ///   data (Map<String, dynamic>): The "data" parameter is a Map object that contains key-value pairs
+  /// of String keys and dynamic values. It is used to update the "_clientData" variable with new data.
   Map<String, dynamic> _clientData = {};
   Map<String, dynamic> get clientData => _clientData;
   setClientData(Map<String, dynamic> data) {
@@ -27,6 +38,12 @@ class SingleProfileProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+ /// The function `separateDetailsInClientData` takes a map of client data and separates it into
+ /// different categories, such as basic info, FATCA details, contact details, bank details, nominee
+ /// details, and other details, and stores them in a list of maps called `_clientDataSeparated`.
+ /// 
+ /// Args:
+ ///   data (Map<String, dynamic>): A map containing client data with various key-value pairs.
   List<Map<String, dynamic>> _clientDataSeparated = [];
   List<Map<String, dynamic>> get clientDataSeparated => _clientDataSeparated;
   separateDetailsInClientData(Map<String, dynamic> data) {

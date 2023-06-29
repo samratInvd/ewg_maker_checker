@@ -89,7 +89,7 @@ class SingleProfileProvider extends ChangeNotifier {
       "Nominee Relationship": data['Nominee Relationship'] ?? "N/A",
       "Nominee Applicable": "${data['Nominee  Applicable(%)']} %",
       "Is Nominee Minor": data['Nominee  Minor Flag'] ?? "N/A",
-      "Nomine Date of Birth": data['Nominee  DOB'] ?? "N/A",
+      "Nominee Date of Birth": data['Nominee  DOB'] ?? "N/A",
     };
     Map<String, dynamic> otherDetails = {    
       // "First Name": data['First Name'] ?? "N/A",

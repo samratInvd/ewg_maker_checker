@@ -21,7 +21,7 @@ class _LayoutPageState extends State<LayoutPage> {
     "/dashboard": DashboardPage(),
     "/makerChecker": MakerCheckerPage(),
     "/dynamicUpdates": DynamicUpdatesPage(),
-    "/clientDetails": ClientDetailsPage()
+    // "/clientDetails": ClientDetailsPage()
   };
 
   String dropdownValue = 'Pending';
@@ -33,6 +33,7 @@ class _LayoutPageState extends State<LayoutPage> {
         return AdminScaffold(
           backgroundColor: Colors.white,
           appBar: AppBar(
+
             title: Text('JM Financial', style: TextStyle(color: Colors.white, fontFamily: 'Bold'),),
             backgroundColor: Color(0xff461257),
             iconTheme: IconThemeData(color: Colors.white),

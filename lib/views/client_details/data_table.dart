@@ -4,6 +4,7 @@ import 'package:ewg_maker_checker/models/response_model.dart';
 import 'package:ewg_maker_checker/providers/api_provider.dart';
 import 'package:ewg_maker_checker/providers/routes_provider.dart';
 import 'package:ewg_maker_checker/providers/single_profile_provider.dart';
+import 'package:ewg_maker_checker/views/drawer/drawer_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/client_details_provider.dart';
@@ -45,7 +46,7 @@ class _DataTableWidgetState extends State<DataTableWidget> {
           );
         } else {
           return SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
+            scrollDirection: Axis.horizontal,            
             child: SingleChildScrollView(
               scrollDirection: Axis.vertical,
               child: DataTable(
@@ -87,9 +88,8 @@ class _DataTableWidgetState extends State<DataTableWidget> {
                           onPressed: () async {
                             // Handle button press
                             print(
-                                'View Client pressed for ${clientDetail.formID}');
-                            routesProvider.setSelectedRoute("/makerChecker");
-
+                                'View Client pressed for ${clientDetail.formID}');                          
+              
                             /// This code is making a POST request to an API endpoint using the
                             /// `ApiProvider` class and the `postRequest` method. The `endpoint` parameter
                             /// specifies the endpoint to which the request is being made, and the `body`
@@ -109,6 +109,7 @@ class _DataTableWidgetState extends State<DataTableWidget> {
                                   "FormNo":
                                       encryptString("${clientDetail.formID}")
                                 }).then((response) async {
+                                  log("status code ====> ${response.statusCode}");
                                   Provider.of<SingleProfileProvider>(context, listen: false).setFormNo(clientDetail.formID.toString());
                               /// This code block is checking the `statusCode` of the `response` received
                               /// from a POST request made to an API endpoint. If the `statusCode` is not
@@ -143,11 +144,9 @@ class _DataTableWidgetState extends State<DataTableWidget> {
                                       );
                                     });
                               } else {
-                                log(response.toJson().toString());
-
                                 // CLEARING THE DATA
                                 singleProfileProvider.clearData();
-
+              
                                 // Populating the new data
                                 /// These lines of code are populating the data of a single client and
                                 /// setting it in the `SingleProfileProvider` for further use.
@@ -162,6 +161,16 @@ class _DataTableWidgetState extends State<DataTableWidget> {
                                 print(singleProfileProvider.clientData);
                                 singleProfileProvider
                                     .setFormNo(clientDetail.formID.toString());
+                                singleProfileProvider.setFinalStatus(int.parse(singleProfileProvider.clientData['Final_Status'].toString()));
+
+                                setState(() {});
+                      
+                      
+                                routesProvider.setSubCurrentTab(1);
+                                routesProvider.setCurrentTab(1);                          
+                      
+                                log("subcurrent tab ====> ${routesProvider.subCurrentTab}");
+                                log("current tab ====> ${routesProvider.currentTab}");
                               }
                               return response;
                             });

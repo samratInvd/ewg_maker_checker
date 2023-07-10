@@ -18,7 +18,7 @@ class _DynamicUpdatesPageState extends State<DynamicUpdatesPage> {
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
-      child: Column(
+      child: SingleChildScrollView(child: Column(
         children: [
           // HEADER
           Container(
@@ -93,6 +93,6 @@ class _DynamicUpdatesPageState extends State<DynamicUpdatesPage> {
           )
         ],
       ),
-    );
+    ));
   }
 }

@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:dart_ipify/dart_ipify.dart';
+// import 'package:dart_ipify/dart_ipify.dart';
 import 'package:ewg_maker_checker/data/encrption_bse.dart';
 import 'package:ewg_maker_checker/providers/api_provider.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +9,11 @@ import 'package:provider/provider.dart';
 
 class SingleProfileProvider extends ChangeNotifier {
 
+  /// The above code defines a private variable `_formNo` and a getter `formNo` to access its value, and
+  /// a setter `setFormNo` to update its value and notify listeners.
+  ///
+  /// Args:
+  ///   no (String): The parameter "no" is a String that represents the new value for the form number.
   String _formNo = "";
   String get formNo => _formNo;
   void setFormNo(String no) {
@@ -16,6 +21,12 @@ class SingleProfileProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// The function `setClientData` sets the `_clientData` variable to the provided data and notifies
+  /// listeners of the change.
+  ///
+  /// Args:
+  ///   data (Map<String, dynamic>): The "data" parameter is a Map object that contains key-value pairs
+  /// of String keys and dynamic values. It is used to update the "_clientData" variable with new data.
   Map<String, dynamic> _clientData = {};
   Map<String, dynamic> get clientData => _clientData;
   setClientData(Map<String, dynamic> data) {
@@ -27,6 +38,12 @@ class SingleProfileProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+ /// The function `separateDetailsInClientData` takes a map of client data and separates it into
+ /// different categories, such as basic info, FATCA details, contact details, bank details, nominee
+ /// details, and other details, and stores them in a list of maps called `_clientDataSeparated`.
+ ///
+ /// Args:
+ ///   data (Map<String, dynamic>): A map containing client data with various key-value pairs.
   List<Map<String, dynamic>> _clientDataSeparated = [];
   List<Map<String, dynamic>> get clientDataSeparated => _clientDataSeparated;
   separateDetailsInClientData(Map<String, dynamic> data) {
@@ -51,8 +68,8 @@ class SingleProfileProvider extends ChangeNotifier {
       "isMinor": data['isMinor'] ?? "N/A",
       "Gurdian": data['Gurdian'] ?? "N/A" ?? "N/A",
       "Residential": data['Country'] ?? "N/A",
-      "Tax Status": data['Country'] ?? "N/A",
-      "Marital Status": data['Marital Status'] ?? "N/A",
+      // "Tax Status": data['Country'] ?? "N/A",
+      // "Marital Status": data['Marital Status'] ?? "N/A",
     };
     Map<String, dynamic> fatcaDetails = {
       "Residential": data['Address Type'] ?? "N/A",
@@ -61,7 +78,7 @@ class SingleProfileProvider extends ChangeNotifier {
       "Nationality": data['Country'] ?? "N/A",
       "Occupation": data['Occupation'] ?? "N/A",
       "Annual Income": data['Annual Income'] ?? "N/A",
-      "Source of Income": data['Source of Income'] ?? "N/A",      
+      "Source of Income": data['Source of Income'] ?? "N/A",
     };
     Map<String, dynamic> contactDetails = {
       "Mobile No": data['MobileNo'] ?? "N/A",
@@ -71,32 +88,30 @@ class SingleProfileProvider extends ChangeNotifier {
       "City": data['Per City'] ?? "N/A",
       "Pincode": data['PerPincode'] ?? "N/A",
       "Country": data['Country'] ?? "N/A",
-      "Place of birth": data['Place of birth'] ?? "N/A",
-      "Country of Tax": data['Country of birth'] ?? "N/A",
     };
     Map<String, dynamic> bankDetails = {
-      "Address": data['Per Address 1'] + ", " + data['Per Address 2'] + ", " + data['Per Address 3'],      
-      "City": data['Per City'] ?? "N/A",
-      "State": data['Per State'] ?? "N/A",
-      "Pincode": data['PerPincode'] ?? "N/A",
-      "Country": data['Country'] ?? "N/A",
-      "Place of birth": data['Place of birth'] ?? "N/A",
+      // "Address": data['Per Address 1'] + ", " + data['Per Address 2'] + ", " + data['Per Address 3'],
+      // "City": data['Per City'] ?? "N/A",
+      // "State": data['Per State'] ?? "N/A",
+      // "Pincode": data['PerPincode'] ?? "N/A",
+      // "Country": data['Country'] ?? "N/A",
+      // "Place of birth": data['Place of birth'] ?? "N/A",
       "Account Type": data['Account Type'] ?? "N/A",
       "Account No": data['Account No'] ?? "N/A",
       "MICR No": data['MICR No'] ?? "N/A",
       "IFSC Code": data['IFSC Code'] ?? "N/A",
     };
-    Map<String, dynamic> nomineeDetails = {    
+    Map<String, dynamic> nomineeDetails = {
       "Nominee Name": data['Nominee Name'] ?? "N/A",
       "Nominee Relationship": data['Nominee Relationship'] ?? "N/A",
       "Nominee Applicable": "${data['Nominee  Applicable(%)']} %",
       "Is Nominee Minor": data['Nominee  Minor Flag'] ?? "N/A",
-      "Nomine Date of Birth": data['Nominee  DOB'] ?? "N/A",
+      "Nominee Date of Birth": data['Nominee  DOB'] ?? "N/A",
     };
-    Map<String, dynamic> otherDetails = {    
-      "First Name": data['First Name'] ?? "N/A",
-      "Middle Name": data['Middle Name'] ?? "N/A",
-      "Last Name": data['Last Name'] ?? "N/A",
+    Map<String, dynamic> otherDetails = {
+      // "First Name": data['First Name'] ?? "N/A",
+      // "Middle Name": data['Middle Name'] ?? "N/A",
+      // "Last Name": data['Last Name'] ?? "N/A",
     };
 
     // ADDING ALL THE MAPS IN THE LIST
@@ -157,12 +172,12 @@ class SingleProfileProvider extends ChangeNotifier {
   void setAllClients(List<dynamic> clients) {
     _allClients.add(clients);
     notifyListeners();
-  } 
+  }
 
   void clearAllClients() {
     _allClients.clear();
     notifyListeners();
-  }  
+  }
 
 
   // //------- CALL BSE APIS TO REGISTER THE CLIENT TO BSE FOR TRANSACTIONS -------//
@@ -182,10 +197,10 @@ class SingleProfileProvider extends ChangeNotifier {
 
   // Future<void> callBseApis(context, Map<String, dynamic> data) async {
   //   String ip4String = await Ipify.ipv4();
-    
+
   //   // UCC CREATION
   //   Response response1 = await post(
-  //     Uri.parse("https://jmbseapi.invd.in/api/ClientSignUp/SignUp"),
+  //     Uri.parse("https://jmuatapi.invd.in/api/ClientSignUp/SignUp"),
   //     body: jsonEncode({
   //       "ParamValue": encryptStringBSE("${data['First Name']} ${data['Middle Name']} ${data['Last Name']}|${data['EmailId']}|${data['MobileNo']}|$ip4String|OWNCL00001")
   //     })
@@ -196,7 +211,7 @@ class SingleProfileProvider extends ChangeNotifier {
 
   //   // SESSION ID CREATION
   //   Response response2 = await post(
-  //     Uri.parse("https://jmbseapi.invd.in/api/Common/GenerateClientSession"),
+  //     Uri.parse("https://jmuatapi.invd.in/api/Common/GenerateClientSession"),
   //     body: jsonEncode({
   //       "ParamValue": encryptStringBSE("$_ucc")
   //     })
@@ -207,7 +222,7 @@ class SingleProfileProvider extends ChangeNotifier {
 
   //   // UDPATE PERSONAL INFO
   //   Response response3= await post(
-  //     Uri.parse("https://jmbseapi.invd.in/api/ClientOnboard/UpdatePersonalInfoPrimary"),
+  //     Uri.parse("https://jmuatapi.invd.in/api/ClientOnboard/UpdatePersonalInfoPrimary"),
   //     body: jsonEncode({
   //       "ParamValue": encryptStringBSE("$_ucc|$_sessionId|${data['Gender']}|01|${data['Middle Name']}|${data['First Name']} ${data['Middle Name']} ${data['Last Name']}|91-${data['MobileNo']}|${data['EmailId']}||")
   //     })
@@ -216,7 +231,7 @@ class SingleProfileProvider extends ChangeNotifier {
 
   //   // UPDATE CLIENT TYPE
   //   Response response4 = await post(
-  //     Uri.parse("https://jmbseapi.invd.in/api/ClientOnboard/UpdateClientType"),
+  //     Uri.parse("https://jmuatapi.invd.in/api/ClientOnboard/UpdateClientType"),
   //     body: jsonEncode({
   //       "ParamValue": encryptStringBSE("$_ucc|$_sessionId|single|01")
   //     })
@@ -225,7 +240,7 @@ class SingleProfileProvider extends ChangeNotifier {
 
   //   // UPDATE NOMINEE INFO
   //   Response response5 = await post(
-  //     Uri.parse("https://jmbseapi.invd.in/api/ClientOnboard/UpdateNomineeInfo"),
+  //     Uri.parse("https://jmuatapi.invd.in/api/ClientOnboard/UpdateNomineeInfo"),
   //     body: jsonEncode({
   //       "ParamValue": encryptStringBSE("$_ucc|$_sessionId|${data['Nominee Name']}|DC")
   //     })
@@ -234,7 +249,7 @@ class SingleProfileProvider extends ChangeNotifier {
 
   //   // UPDATE PRIMARY ADDRESS
   //   Response response6 = await post(
-  //     Uri.parse("https://jmbseapi.invd.in/api/ClientOnboard/UpdatePrimaryAddress"),
+  //     Uri.parse("https://jmuatapi.invd.in/api/ClientOnboard/UpdatePrimaryAddress"),
   //     body: jsonEncode({
   //       "ParamValue": encryptStringBSE("$_ucc|$_sessionId|${data['Per Address 1']},${data['Per Address 2']},${data['Per Address 3']}|${data['Place of birth']}|MA|${data['PerPincode']}")
   //     })
@@ -243,7 +258,7 @@ class SingleProfileProvider extends ChangeNotifier {
 
   //   // UPDATE BANK DETAILS
   //   // Response response7 = await post(
-  //   //   Uri.parse("https://jmbseapi.invd.in/api/ClientSignUp/SignUp"),
+  //   //   Uri.parse("https://jmuatapi.invd.in/api/ClientSignUp/SignUp"),
   //   //   body: jsonEncode({
   //   //     "ParamValue": encryptStringBSE("${data['First Name']} ${data['Middle Name']} ${data['Last Name']}|${data['EmailId']}|${data['MobileNo']}|$ip4String|OWNCL00001")
   //   //   })
@@ -251,7 +266,7 @@ class SingleProfileProvider extends ChangeNotifier {
 
   //   // // UCC CREATION
   //   // Response response1 = await post(
-  //   //   Uri.parse("https://jmbseapi.invd.in/api/ClientSignUp/SignUp"),
+  //   //   Uri.parse("https://jmuatapi.invd.in/api/ClientSignUp/SignUp"),
   //   //   body: jsonEncode({
   //   //     "ParamValue": encryptStringBSE("${data['First Name']} ${data['Middle Name']} ${data['Last Name']}|${data['EmailId']}|${data['MobileNo']}|$ip4String|OWNCL00001")
   //   //   })
@@ -259,7 +274,7 @@ class SingleProfileProvider extends ChangeNotifier {
 
   //   // // UCC CREATION
   //   // Response response1 = await post(
-  //   //   Uri.parse("https://jmbseapi.invd.in/api/ClientSignUp/SignUp"),
+  //   //   Uri.parse("https://jmuatapi.invd.in/api/ClientSignUp/SignUp"),
   //   //   body: jsonEncode({
   //   //     "ParamValue": encryptStringBSE("${data['First Name']} ${data['Middle Name']} ${data['Last Name']}|${data['EmailId']}|${data['MobileNo']}|$ip4String|OWNCL00001")
   //   //   })

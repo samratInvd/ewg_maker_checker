@@ -17,4 +17,23 @@ class RoutesProvider extends ChangeNotifier {
     _selectedRoute = route;
     notifyListeners();
   }
+
+
+
+  int _currentTab = 0;
+  int get currentTab => _currentTab;
+
+  int _subCurrentTab = 0;
+  int get subCurrentTab => _subCurrentTab;
+
+  void setCurrentTab(int tab) {
+    _currentTab = tab;
+    notifyListeners();
+  }
+
+  void setSubCurrentTab(int tab) {
+    _subCurrentTab = tab;
+    notifyListeners();
+  }
+
 }

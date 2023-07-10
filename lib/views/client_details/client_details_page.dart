@@ -28,7 +28,7 @@ class _ClientDetailsPageState extends State<ClientDetailsPage> {
           width: MediaQuery.of(context).size.width,
           child: Padding(
             padding: const EdgeInsets.only(left: 32.0, right: 32.0),
-            child: Column(
+            child: SingleChildScrollView(child: Column(
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -185,7 +185,7 @@ class _ClientDetailsPageState extends State<ClientDetailsPage> {
               ],
             ),
           ),
-        );
+        ));
       }
     );
   }

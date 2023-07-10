@@ -5,6 +5,7 @@ import 'package:ewg_maker_checker/models/response_model.dart';
 import 'package:ewg_maker_checker/providers/api_provider.dart';
 import 'package:ewg_maker_checker/providers/single_profile_provider.dart';
 import 'package:ewg_maker_checker/utils/navigator.dart';
+import 'package:ewg_maker_checker/views/home/home.dart';
 import 'package:ewg_maker_checker/views/layout_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -45,7 +46,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
         log(Provider.of<SingleProfileProvider>(context, listen: false).clientDataSeparated.toString());
 
-        Navigation.pushReplacement(context: context, child: LayoutPage());
+        //Navigation.pushReplacement(context: context, child: LayoutPage());
+        Navigation.pushReplacement(context: context, child: Home());
 
       });  
     super.initState();

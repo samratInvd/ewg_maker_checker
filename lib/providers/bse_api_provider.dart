@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:dart_ipify/dart_ipify.dart';
+// import 'package:dart_ipify/dart_ipify.dart';
 import 'package:ewg_maker_checker/data/encrption_bse.dart';
 import 'package:ewg_maker_checker/models/response_model.dart';
 import 'package:ewg_maker_checker/providers/api_provider.dart';
@@ -18,7 +18,7 @@ class BseApiProvider extends ChangeNotifier {
 
 
   Future<void> onboarding(Map<String, dynamic> clientData) async {
-    uccGeneration(clientData);
+    // uccGeneration(clientData);
     sessionIdGeneration();
     updateClientType(clientData);
     updateBankDetails(clientData);
@@ -31,46 +31,46 @@ class BseApiProvider extends ChangeNotifier {
   }
 
 
-  uccGeneration(Map<String, dynamic> clientData) async {
-    String ipV4 = await Ipify.ipv4();
-    print("${clientData['First Name']} ${clientData['Middle Name']} ${clientData['Last Name']}|${clientData['EmailId']}|${clientData['MobileNo']}|${ipV4}|OWNCL00001");
-    print(encryptStringBSE("${clientData['First Name']} ${clientData['Middle Name']} ${clientData['Last Name']}|${clientData['EmailId']}|${clientData['MobileNo']}|${ipV4}|OWNCL00001"));
+  // uccGeneration(Map<String, dynamic> clientData) async {
+  //   // String ipV4 = await Ipify.ipv4();
+  //   print("${clientData['First Name']} ${clientData['Middle Name']} ${clientData['Last Name']}|${clientData['EmailId']}|${clientData['MobileNo']}|${ipV4}|OWNCL00001");
+  //   print(encryptStringBSE("${clientData['First Name']} ${clientData['Middle Name']} ${clientData['Last Name']}|${clientData['EmailId']}|${clientData['MobileNo']}|${ipV4}|OWNCL00001"));
     
-    // print(jsonEncode(body).toString());    
+  //   // print(jsonEncode(body).toString());    
 
-    try {
-      Response getUcc = await post(
-        Uri.parse("https://jmbseapi.invd.in/api/ClientSignUp/SignUp"),
-        body: {
-          "ParamValue": encryptStringBSE("${clientData['First Name']} ${clientData['Middle Name'] == "null" || clientData['Middle Name'] == null ? "" : clientData['Middle Name']} ${clientData['Last Name']}|${clientData['EmailId']}|${clientData['MobileNo']}|${ipV4}|OWNCL00001")
-        },      
-      );
-      var data = jsonDecode(getUcc.body);
-      print("UCC: " + data);
-      _ucc = data['UCC'];
-      notifyListeners();
-    } catch(e) {
-      print("ERROR: ${e.toString()}");
-    }
+  //   try {
+  //     Response getUcc = await post(
+  //       Uri.parse("https://jmuatapi.invd.in/api/ClientSignUp/SignUp"),
+  //       body: {
+  //         "ParamValue": encryptStringBSE("${clientData['First Name']} ${clientData['Middle Name'] == "null" || clientData['Middle Name'] == null ? "" : clientData['Middle Name']} ${clientData['Last Name']}|${clientData['EmailId']}|${clientData['MobileNo']}|${ipV4}|OWNCL00001")
+  //       },      
+  //     );
+  //     var data = jsonDecode(getUcc.body);
+  //     print("UCC: " + data);
+  //     _ucc = data['UCC'];
+  //     notifyListeners();
+  //   } catch(e) {
+  //     print("ERROR: ${e.toString()}");
+  //   }
 
 
-    // ResponseModel responseModel = await Provider.of<ApiProvider>(context, listen: false).postRequest(
-    //   endpoint: 'api/BSEAPI/UpdateUCC',
-    //   body: {
-    //     "formNo": encryptStringBSE(formNo),
-    //     "mf_UCC": encryptStringBSE(_ucc),
-    //     "ucc": encryptStringBSE("EWG" + _ucc)
-    //   }
-    // );
+  //   // ResponseModel responseModel = await Provider.of<ApiProvider>(context, listen: false).postRequest(
+  //   //   endpoint: 'api/BSEAPI/UpdateUCC',
+  //   //   body: {
+  //   //     "formNo": encryptStringBSE(formNo),
+  //   //     "mf_UCC": encryptStringBSE(_ucc),
+  //   //     "ucc": encryptStringBSE("EWG" + _ucc)
+  //   //   }
+  //   // );
 
-    // log(responseModel.toJson().toString());
-  }
+  //   // log(responseModel.toJson().toString());
+  // }
 
 
   sessionIdGeneration() async {
     try {
       Response getSessionId = await post(
-        Uri.parse("https://jmbseapi.invd.in/api/Common/GenerateClientSession"),
+        Uri.parse("https://jmuatapi.invd.in/api/Common/GenerateClientSession"),
         body: {
           "ParamValue": encryptStringBSE("1002")
         },        
@@ -88,7 +88,7 @@ class BseApiProvider extends ChangeNotifier {
 
   updatePrimaryInfo(Map<String, dynamic> clientData) async {
     Response getPrimaryInfo = await post(
-      Uri.parse("https://jmbseapi.invd.in/api/ClientOnboard/UpdatePersonalInfoPrimary"),
+      Uri.parse("https://jmuatapi.invd.in/api/ClientOnboard/UpdatePersonalInfoPrimary"),
       body: jsonEncode(
         {
           "ParamValue": encryptStringBSE(
@@ -105,7 +105,7 @@ class BseApiProvider extends ChangeNotifier {
 
   updateClientType(Map<String, dynamic> clientData) async {
     Response getClientType = await post(
-      Uri.parse("https://jmbseapi.invd.in/api/ClientOnboard/UpdateClientType"),
+      Uri.parse("https://jmuatapi.invd.in/api/ClientOnboard/UpdateClientType"),
       body: jsonEncode(
         {
           "ParamValue": encryptStringBSE(
@@ -129,7 +129,7 @@ class BseApiProvider extends ChangeNotifier {
     dob = "$year-$month-$day";
 
     Response getCvl = await post(
-      Uri.parse("https://jmbseapi.invd.in/api/ClientOnboard/CheckCVLPrimary"),
+      Uri.parse("https://jmuatapi.invd.in/api/ClientOnboard/CheckCVLPrimary"),
       body: jsonEncode(
         {
           "ParamValue": encryptStringBSE(
@@ -147,7 +147,7 @@ class BseApiProvider extends ChangeNotifier {
 
   updateNomineeInfo(Map<String, dynamic> clientData) async {
     Response getNomineeInfo = await post(
-      Uri.parse("https://jmbseapi.invd.in/api/ClientOnboard/UpdateNomineeInfo"),
+      Uri.parse("https://jmuatapi.invd.in/api/ClientOnboard/UpdateNomineeInfo"),
       body: jsonEncode(
         {
           "ParamValue": encryptStringBSE(
@@ -164,7 +164,7 @@ class BseApiProvider extends ChangeNotifier {
 
   updatePersonalAddress(Map<String, dynamic> clientData) async {
     Response getAddress = await post(
-      Uri.parse("https://jmbseapi.invd.in/api/ClientOnboard/UpdatePrimaryAddress"),
+      Uri.parse("https://jmuatapi.invd.in/api/ClientOnboard/UpdatePrimaryAddress"),
       body: jsonEncode(
         {
           "ParamValue": encryptStringBSE(
@@ -181,7 +181,7 @@ class BseApiProvider extends ChangeNotifier {
   
   updateBankDetails(Map<String, dynamic> clientData) async {
     Response getBankDetails = await post(
-      Uri.parse("https://jmbseapi.invd.in/api/ClientOnboard/UpdateBankDetails"),
+      Uri.parse("https://jmuatapi.invd.in/api/ClientOnboard/UpdateBankDetails"),
       body: jsonEncode(
         {
           "ParamValue": encryptStringBSE(
@@ -199,7 +199,7 @@ class BseApiProvider extends ChangeNotifier {
   
   updateFatcaDetails(Map<String, dynamic> clientData) async {
     Response getFatcaDetails = await post(
-      Uri.parse("https://jmbseapi.invd.in/api/ClientOnboard/UpdateFatcaInfo"),
+      Uri.parse("https://jmuatapi.invd.in/api/ClientOnboard/UpdateFatcaInfo"),
       body: jsonEncode(
         {
           "ParamValue": encryptStringBSE(
@@ -216,7 +216,7 @@ class BseApiProvider extends ChangeNotifier {
 
   clientDocSignDetails(Map<String, dynamic> clientData) async {
     Response getClientDoc = await post(
-      Uri.parse("https://jmbseapi.invd.in/api/ClientOnboard/UpdateClientDocs"),
+      Uri.parse("https://jmuatapi.invd.in/api/ClientOnboard/UpdateClientDocs"),
       body: jsonEncode(
         {
           "ParamValue": encryptStringBSE(
@@ -233,7 +233,7 @@ class BseApiProvider extends ChangeNotifier {
 
   clientDocChequeDetails(Map<String, dynamic> clientData) async {
     Response getClientDoc = await post(
-      Uri.parse("https://jmbseapi.invd.in/api/ClientOnboard/UpdateClientDocs"),
+      Uri.parse("https://jmuatapi.invd.in/api/ClientOnboard/UpdateClientDocs"),
       body: jsonEncode(
         {
           "ParamValue": encryptStringBSE(
